@@ -59,10 +59,55 @@ function SamPageContent() {
     alert('Evaluaci\u00f3n simulada: ' + responseText.substring(0, 50));
   };
 
-  const handleExport = () => {
-    alert('Exportando resultados...');
-  };
+const handleExport = () => {
+    if (!responseText.trim()) {
+      alert('No hay contenido para exportar');
+      return;
+    }
 
+    // Generar timestamp y slug
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0].replace(/-/g, '');
+    const slug = responseText.trim().substring(0, 20).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+    const baseFilename = `SAM_${dateStr}_${slug}`;
+
+    // 1. Descargar TXT
+    const txtBlob = new Blob([responseText], { type: 'text/plain;charset=utf-8' });
+    const txtUrl = URL.createObjectURL(txtBlob);
+    const txtLink = document.createElement('a');
+    txtLink.href = txtUrl;
+    txtLink.download = `${baseFilename}.txt`;
+    document.body.appendChild(txtLink);
+    txtLink.click();
+    document.body.removeChild(txtLink);
+    URL.revokeObjectURL(txtUrl);
+
+    // 2. Descargar DOC (HTML compatible con Word)
+    const docHtml = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>SAM Evaluation Export</title>
+        </head>
+        <body>
+          <h1>SAM v6 - Evaluación de Respuesta</h1>
+          <p><strong>Fecha:</strong> ${now.toLocaleDateString('es-CL')}</p>
+          <hr>
+          <pre>${responseText}</pre>
+        </body>
+      </html>
+    `;
+    const docBlob = new Blob([docHtml], { type: 'application/msword' });
+    const docUrl = URL.createObjectURL(docBlob);
+    const docLink = document.createElement('a');
+    docLink.href = docUrl;
+    docLink.download = `${baseFilename}.doc`;
+    document.body.appendChild(docLink);
+    docLink.click();
+    document.body.removeChild(docLink);
+    URL.revokeObjectURL(docUrl);
+  };
   const handleSubscribe = async () => {
     try {
       const res = await fetch('/api/checkout', {
