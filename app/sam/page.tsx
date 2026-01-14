@@ -250,14 +250,14 @@ const handleExport = () => {
 
         {/* CTA de suscripci\u00f3n */}
         {!isPro && (
-          <div
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
             
                     {/* Mensaje de error de exportación */}
         {exportError && (
           <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             {exportError}
           </div>
-        )}className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
+        )}
             <h3 className="text-lg font-semibold text-indigo-900 mb-2">
               \u00bfQuieres m\u00e1s funcionalidades?
             </h3>
