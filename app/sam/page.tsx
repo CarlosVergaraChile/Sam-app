@@ -105,7 +105,7 @@ const handleExport = () => {
           <h1>SAM v6 - Evaluación de Respuesta</h1>
           <p><strong>Fecha:</strong> ${now.toLocaleDateString('es-CL')}</p>
           <hr>
-          <pre>${responseText}</pre>
+          <pre>${escapeHtml(responseText)}</pre>
         </body>
       </html>
     `;
