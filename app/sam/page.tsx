@@ -6,10 +6,21 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 const LS_KEY = 'sam_is_pro';
 
+// Sanitizar HTML para evitar romper export DOC
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 
 function SamPageContent() {
   const [isPro, setIsPro] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
+    const [exportError, setExportError] = useState('');
   const [responseText, setResponseText] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -108,6 +119,46 @@ const handleExport = () => {
     document.body.removeChild(docLink);
     URL.revokeObjectURL(docUrl);
   };
+
+    const handlePrintPdf = () => {
+    if (!responseText.trim()) {
+      alert('No hay contenido para exportar');
+      return;
+    }
+    
+    setExportError(''); // Limpiar errores previos
+    const w = window.open('', '_blank');
+    if (!w) {
+      setExportError('No se pudo abrir la ventana de impresión. Revisa el bloqueador de popups.');
+      return;
+    }
+    
+    const now = new Date();
+    w.document.open();
+    w.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>SAM Evaluation Export - PDF</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            h1 { color: #333; }
+            pre { white-space: pre-wrap; word-wrap: break-word; }
+          </style>
+        </head>
+        <body>
+          <h1>SAM v6 - Evaluación de Respuesta</h1>
+          <p><strong>Fecha:</strong> ${now.toLocaleDateString('es-CL')}</p>
+          <hr>
+          <pre>${escapeHtml(responseText)}</pre>
+        </body>
+      </html>
+    `);
+    w.document.close();
+    w.focus();
+    w.print();
+  };
   const handleSubscribe = async () => {
     try {
       const res = await fetch('/api/checkout', {
@@ -185,13 +236,28 @@ const handleExport = () => {
             title={!isPro ? 'Requiere plan PRO' : 'Exportar resultados'}
             className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
+                      {isPro && (
+            <button
+              onClick={handlePrintPdf}
+              className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              🖨️ Imprimir / PDF
+            </button>
+          )}
             {isPro ? 'Exportar' : 'Exportar (PRO)'}
           </button>
         </div>
 
         {/* CTA de suscripci\u00f3n */}
         {!isPro && (
-          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
+          <div
+            
+                    {/* Mensaje de error de exportación */}
+        {exportError && (
+          <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {exportError}
+          </div>
+        )}className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-indigo-900 mb-2">
               \u00bfQuieres m\u00e1s funcionalidades?
             </h3>
