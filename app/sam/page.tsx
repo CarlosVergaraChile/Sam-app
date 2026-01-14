@@ -19,7 +19,7 @@ function escapeHtml(text: string): string {
 function SamPageContent() {
   const [isPro, setIsPro] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
-  const [exportError, setExportError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [responseText, setResponseText] = useState('');
   const [printMode, setPrintMode] = useState(false);
   const router = useRouter();
@@ -64,7 +64,7 @@ function SamPageContent() {
 
   const handleEvaluate = () => {
     if (!responseText.trim()) {
-      alert('Por favor ingresa una respuesta para evaluar');
+      setErrorMessage('Por favor ingresa una respuesta para evaluar');
       return;
     }
     alert('Evaluación simulada: ' + responseText.substring(0, 50));
@@ -72,7 +72,7 @@ function SamPageContent() {
 
   const handleExport = () => {
     if (!responseText.trim()) {
-      alert('No hay contenido para exportar');
+      setErrorMessage('No hay contenido para exportar');
       return;
     }
 
@@ -123,11 +123,11 @@ function SamPageContent() {
 
   const handlePrintPdf = () => {
     if (!responseText.trim()) {
-      alert('No hay contenido para exportar');
+      setErrorMessage('No hay contenido para exportar');
       return;
     }
 
-    setExportError('');
+    setErrorMessage('');
     setPrintMode(true);
 
     // Configurar handler de después de imprimir
@@ -142,7 +142,7 @@ function SamPageContent() {
       try {
         window.print();
       } catch (error) {
-        setExportError('Error al abrir el diálogo de impresión.');
+        setErrorMessage('No se pudo abrir la impresión. Revisa el bloqueador del navegador.');
         setPrintMode(false);
       }
 
@@ -273,11 +273,11 @@ function SamPageContent() {
         </div>
 
         {/* Mensaje de error de exportación */}
-        {exportError && (
+        {errorMessage && (
           <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {exportError}
+            {errorMessage}
           </div>
-        )}
+        errorMessage
 
         {/* CTA de suscripción */}
         {!isPro && (
