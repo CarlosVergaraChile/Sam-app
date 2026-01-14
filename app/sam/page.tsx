@@ -14,18 +14,22 @@ export default function SamPage() {
 
   // Efecto init: leer localStorage al montar
   useEffect(() => {
-    const stored = localStorage.getItem(LS_KEY);
-    if (stored === 'true') {
-      setIsPro(true);
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(LS_KEY);
+      if (stored === 'true') {
+        setIsPro(true);
+      }
     }
   }, []);
 
   // Efecto persist: cuando isPro cambia, actualizar localStorage
   useEffect(() => {
-    if (isPro) {
-      localStorage.setItem(LS_KEY, 'true');
-    } else {
-      localStorage.removeItem(LS_KEY);
+    if (typeof window !== 'undefined') {
+      if (isPro) {
+        localStorage.setItem(LS_KEY, 'true');
+      } else {
+        localStorage.removeItem(LS_KEY);
+      }
     }
   }, [isPro]);
 
