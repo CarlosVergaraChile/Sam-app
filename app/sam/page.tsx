@@ -202,15 +202,18 @@ function SamPageContent() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Banner de éxito (solo en memoria) */}
-      {showBanner && (
+{showBanner && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-          <strong className="font-bold">¡Suscripción exitosa!</strong>
-          <span className="block sm:inline"> Ahora tienes acceso a todas las funciones PRO.</span>
+          <span className="block sm:inline">
+            ¡Suscripción exitosa! Ahora tienes acceso a todas las funciones PRO.
+          </span>
           <button
+            type="button"
             className="absolute top-0 bottom-0 right-0 px-4 py-3"
             onClick={() => setShowBanner(false)}
+            aria-label="Cerrar"
           >
-            <span className="text-2xl">×</span>
+            ✕
           </button>
         </div>
       )}
