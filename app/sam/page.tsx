@@ -1,4 +1,5 @@
 'use client';
+    <>
 
 import { useState, useEffect } from 'react';
 import { Suspense } from 'react';
@@ -160,6 +161,7 @@ const handleExport = () => {
   };
 
   return (
+        <>
         {/* CSS para modo impresión */}
     <style dangerouslySetInnerHTML={{__html: `      @media print {
         body > *:not(#printable-content) {
@@ -300,7 +302,7 @@ const handleExport = () => {
         )}
       </div>
     </div>
-  );
+    </>  );
   }
 
   export default function SamPage() {
