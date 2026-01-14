@@ -181,6 +181,7 @@ function SamPageContent() {
       </div>
     </div>
   );
+  }
 
   export default function SamPage() {
   return (
