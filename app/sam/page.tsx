@@ -167,7 +167,7 @@ function SamPageContent() {
         window.location.href = data.url;
       }
     } catch (error) {
-      console.error([SAM][checkout] error:, error);
+      console.error('[SAM][checkout] error:', error);
     }
   };
 
