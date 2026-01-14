@@ -1,44 +1,45 @@
 import Stripe from "stripe";
 
-export const runtime = "nodejs"; // requerido para Stripe SDK
+export const runtime = "nodejs";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
+  apiVersion: "2025-12-15.clover",
+});
 
 export async function POST(req: Request) {
   const sig = req.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  if (!sig || !webhookSecret) {
-    return new Response("Missing Stripe signature or webhook secret", { status: 400 });
+  if (!sig) {
+    return new Response("Missing stripe-signature header", { status: 400 });
+  }
+  if (!webhookSecret) {
+    return new Response("Missing STRIPE_WEBHOOK_SECRET", { status: 500 });
   }
 
-  let rawBody: string;
-  try {
-    rawBody = await req.text(); // raw body needed for signature verification
-  } catch {
-    return new Response("Unable to read request body", { status: 400 });
-  }
+  const buf = Buffer.from(await req.arrayBuffer());
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+    event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
   } catch (err: any) {
-    return new Response(`Webhook signature verification failed: ${err?.message ?? "unknown"}`, { status: 400 });
+    return new Response(
+      `Signature verification failed: ${err?.message ?? "unknown"}`,
+      { status: 400 }
+    );
   }
 
-  // Minimal handlers (expand later)
   switch (event.type) {
     case "checkout.session.completed":
     case "customer.subscription.created":
     case "invoice.paid":
-      // TODO: persist to DB / update subscription status
       break;
     default:
       break;
   }
 
-  return new Response(JSON.stringify({ received: true, type: event.type }), {
-    status: 200,
-    headers: { "content-type": "application/json" },
-  });
+  return Response.json(
+    { received: true, type: event.type },
+    { status: 200 }
+  );
 }
