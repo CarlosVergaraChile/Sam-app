@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 const LS_KEY = 'sam_is_pro';
 
+export const dynamic = 'force-dynamic';
+
 export default function SamPage() {
   const [isPro, setIsPro] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
