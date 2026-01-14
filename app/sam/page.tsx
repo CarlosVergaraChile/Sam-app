@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const LS_KEY = 'sam_is_pro';
 
-export const dynamic = 'force-dynamic';
 
-export default function SamPage() {
+function SamPageContent() {
   const [isPro, setIsPro] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [responseText, setResponseText] = useState('');
@@ -181,4 +181,12 @@ export default function SamPage() {
       </div>
     </div>
   );
+
+  export default function SamPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SamPageContent />
+    </Suspense>
+  );
+}
 }
