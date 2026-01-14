@@ -67,6 +67,7 @@ function SamPageContent() {
       setErrorMessage('Por favor ingresa una respuesta para evaluar');
       return;
     }
+        setErrorMessage('');
     alert('Evaluación simulada: ' + responseText.substring(0, 50));
   };
 
@@ -75,6 +76,7 @@ function SamPageContent() {
       setErrorMessage('No hay contenido para exportar');
       return;
     }
+        setErrorMessage('');
 
     // Generar timestamp y slug
     const now = new Date();
@@ -245,8 +247,7 @@ function SamPageContent() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             rows={6}
             value={responseText}
-            onChange={(e) => setResponseText(e.target.value)}
-            placeholder="Ingresa aquí la respuesta manuscrita del estudiante..."
+              onChange={(e) => { setResponseText(e.target.value); setErrorMessage(''); }}            placeholder="Ingresa aquí la respuesta manuscrita del estudiante..."
           />
         </div>
 
@@ -278,8 +279,16 @@ function SamPageContent() {
 
         {/* Mensaje de error de exportación */}
         {errorMessage && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {errorMessage}
+                    <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+            <span className="block sm:inline">{errorMessage}</span>
+            <button
+              type="button"
+              className="absolute top-0 bottom-0 right-0 px-4 py-3"
+              onClick={() => setErrorMessage('')}
+              aria-label="Cerrar"
+            >
+              ✕
+            </button>
           </div>
         )}
 
