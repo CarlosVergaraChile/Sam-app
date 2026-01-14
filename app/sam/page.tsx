@@ -25,6 +25,7 @@ function SamPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+    const [printMode, setPrintMode] = useState(false);
   // Efecto init: leer localStorage al montar
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -120,6 +121,7 @@ const handleExport = () => {
     URL.revokeObjectURL(docUrl);
   };
 
+
     const handlePrintPdf = () => {
     if (!responseText.trim()) {
       alert('No hay contenido para exportar');
@@ -127,37 +129,19 @@ const handleExport = () => {
     }
     
     setExportError(''); // Limpiar errores previos
-    const w = window.open('', '_blank');
-    if (!w) {
-      setExportError('No se pudo abrir la ventana de impresión. Revisa el bloqueador de popups.');
-      return;
-    }
+    setPrintMode(true); // Activar modo impresión
     
-    const now = new Date();
-    w.document.open();
-    w.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <title>SAM Evaluation Export - PDF</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 40px; }
-            h1 { color: #333; }
-            pre { white-space: pre-wrap; word-wrap: break-word; }
-          </style>
-        </head>
-        <body>
-          <h1>SAM v6 - Evaluación de Respuesta</h1>
-          <p><strong>Fecha:</strong> ${now.toLocaleDateString('es-CL')}</p>
-          <hr>
-          <pre>${escapeHtml(responseText)}</pre>
-        </body>
-      </html>
-    `);
-    w.document.close();
-    w.focus();
-    w.print();
+    // Esperar 1 tick para que el DOM se actualice, luego imprimir
+    setTimeout(() => {
+      try {
+        window.print();
+      } catch (error) {
+        setExportError('Error al abrir el diálogo de impresión.');
+      } finally {
+        // Volver al modo normal después de imprimir/cancelar
+        setPrintMode(false);
+      }
+    }, 100);
   };
   const handleSubscribe = async () => {
     try {
@@ -176,6 +160,31 @@ const handleExport = () => {
   };
 
   return (
+        {/* CSS para modo impresión */}
+    <style dangerouslySetInnerHTML={{__html: `      @media print {
+        body > *:not(#printable-content) {
+          display: none !important;
+        }
+        #printable-content {
+          display: block !important;
+        }
+        pre {
+          white-space: pre-wrap !important;
+          word-wrap: break-word !important;
+        }
+      }
+    `}} />
+        // Modo impresión: layout simplificado
+    printMode ? (
+      <div id="printable-content" style={{ padding: '40px', fontFamily: 'Arial, sans-serif' }}>
+        <h1>SAM v6 - Evaluación de Respuesta</h1>
+        <p><strong>Fecha:</strong> {new Date().toLocaleDateString('es-CL')}</p>
+        <hr />
+        <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+          {escapeHtml(responseText)}
+        </pre>
+      </div>
+    ) :
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Banner de éxito (solo en memoria) */}
       {showBanner && (
