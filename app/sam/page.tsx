@@ -142,6 +142,7 @@ function SamPageContent() {
       try {
         window.print();
       } catch (error) {
+              console.error('[SAM][print] error:', error);
         setErrorMessage('No se pudo abrir la impresión. Revisa el bloqueador del navegador.');
         setPrintMode(false);
       }
@@ -166,7 +167,7 @@ function SamPageContent() {
         window.location.href = data.url;
       }
     } catch (error) {
-      console.error('Error al crear checkout:', error);
+      console.error([SAM][checkout] error:, error);
     }
   };
 
