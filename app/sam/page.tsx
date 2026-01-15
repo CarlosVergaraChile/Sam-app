@@ -293,22 +293,68 @@ function SamPageContent() {
         )}
 
         {/* CTA de suscripción */}
-        {!isPro && (
-          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-indigo-900 mb-2">
-              ¿Quieres más funcionalidades?
-            </h3>
-            <p className="text-indigo-700 mb-4">
-              Actualiza a PRO para exportar resultados, evaluaciones ilimitadas y más.
-            </p>
+{/* PRICING EARLY BIRD */}
+      {!isPro && (
+        <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-300 rounded-2xl p-8 mb-8 shadow-2xl">
+          <div className="text-center">
+            <div className="inline-block bg-red-600 text-white px-5 py-2 rounded-full text-sm font-bold mb-5 animate-pulse">
+              ⚡ PRECIO FUNDADORES — Solo hasta 28 de febrero
+            </div>
+            
+            <div className="text-8xl font-black text-gray-900 mb-1">
+              $7.990
+            </div>
+            <div className="text-2xl text-gray-600 mb-5">CLP/mes</div>
+            
+            <div className="text-xl text-gray-500 line-through mb-6">
+              Precio regular desde marzo: $9.990/mes
+            </div>
+            
+            <div className="bg-amber-100 border-l-4 border-amber-600 p-4 mb-6 text-left">
+              <p className="text-sm font-bold text-amber-900">
+                ⏰ <strong>Clases inician 4 de marzo</strong> (7 semanas). Asegura tu precio fundadores hoy y consérvalo para siempre.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-left mb-6">
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Evaluaciones ilimitadas</span>
+              </div>
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Exportación TXT y DOC</span>
+              </div>
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Sin permanencia mínima</span>
+              </div>
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Cancela cuando quieras</span>
+              </div>
+            </div>
+            
             <button
               onClick={handleSubscribe}
-              className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full bg-indigo-700 hover:bg-indigo-800 text-white text-2xl font-extrabold py-5 px-8 rounded-xl transition-all shadow-2xl mb-4 transform hover:scale-105"
             >
-              Actualizar a PRO - $9,990/mes
+              Comenzar ahora por $7.990/mes →
             </button>
+            
+            <p className="text-sm text-gray-700 mb-3 font-medium">
+              🔒 Pago seguro con Stripe • Código:{' '}
+              <code className="bg-gray-200 px-2 py-1 rounded font-mono font-bold">
+                FUNDADORES2026
+              </code>
+            </p>
+            
+            <p className="text-xs text-gray-600 italic leading-relaxed">
+              <strong>Garantía de precio:</strong> Si te suscribes a $7.990 hoy, mantienes ese precio indefinidamente. Nuevos usuarios desde 1 marzo pagan $9.900/mes o $99.000/año.
+            </p>
           </div>
-        )}
+        </div>
+      )}
 
         {isPro && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-6">
