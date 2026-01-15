@@ -64,7 +64,7 @@ function SamPageContent() {
 
   const handleEvaluate = () => {
     if (!responseText.trim()) {
-      setErrorMessage('Por favor ingresa una respuesta para evaluar');
+      setErrorMessage('⚠️ Debes ingresar una respuesta del estudiante en el campo de texto para poder evaluarla una respuesta para evaluar');
       return;
     }
         setErrorMessage('');
@@ -73,7 +73,7 @@ function SamPageContent() {
 
   const handleExport = () => {
     if (!responseText.trim()) {
-      setErrorMessage('No hay contenido para exportar');
+      setErrorMessage('📝 Primero debes ingresar una respuesta en el campo de texto antes de poder exportarla');
       return;
     }
         setErrorMessage('');
@@ -125,7 +125,7 @@ function SamPageContent() {
 
   const handlePrintPdf = () => {
     if (!responseText.trim()) {
-      setErrorMessage('No hay contenido para exportar');
+      setErrorMessage('📝 Primero debes ingresar una respuesta en el campo de texto antes de poder exportarla');
       return;
     }
 
@@ -145,7 +145,7 @@ function SamPageContent() {
         window.print();
       } catch (error) {
               console.error('[SAM][print] error:', error);
-        setErrorMessage('No se pudo abrir la impresión. Revisa el bloqueador del navegador.');
+        setErrorMessage('🚨 No se pudo abrir el diálogo de impresión. Verifica que tu navegador permita ventanas emergentes. Revisa el bloqueador del navegador.');
         setPrintMode(false);
       }
 
