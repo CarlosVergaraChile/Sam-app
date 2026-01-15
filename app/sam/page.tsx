@@ -179,7 +179,7 @@ function SamPageContent() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: pricing?.activePrice || 'price_1SpIBTAaDeOcsC00GasIgBeN'' }),
+        body: JSON.stringify({ priceId: pricing?.activePrice || 'price_1SpIBTAaDeOcsC00GasIgBe' }),
       });
       const data = await res.json();
       if (data.url) {
