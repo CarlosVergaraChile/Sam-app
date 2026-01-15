@@ -287,7 +287,6 @@ function SamPageContent() {
           >
             {isPro ? 'Exportar' : 'Exportar (PRO)'}
           </button>
-          85 (
             <button
               onClick={handlePrintPdf}
               className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
