@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// Create a service role client to access auth.users
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -28,20 +34,17 @@ export async function GET(req: NextRequest) {
     }
 
     // Check user-specific feature flag
-    const { data: userData, error: userError } = await supabase
-      .from('auth.users')
-      .select('id')
-      .eq('email', userEmail)
-      .single();
+    const { data: users } = await supabaseAdmin.auth.admin.listUsers();
+    const user = users?.users.find(u => u.email === userEmail);
 
-    if (userError || !userData) {
+    if (!user) {
       return NextResponse.json({ isEnabled: false });
     }
 
     const { data: featureData, error: featureError } = await supabase
       .from('user_features')
       .select('enabled')
-      .eq('user_id', userData.id)
+      .eq('user_id', user.id)
       .eq('feature_name', 'generador')
       .single();
 
@@ -58,6 +61,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ isEnabled: featureData?.enabled || false });
   } catch (error) {
+    console.error('Feature flag error:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
