@@ -251,3 +251,5 @@
 **Ejecutado por**: Comet (Perplexity)
 **Política**: FACTORY_POLICY v1.0 (One-Pass Deployment)
 **Clasificación**: SaaS Web (Next.js + Vercel + Supabase + Stripe)
+
+TRIGGER VERCEL REDEPLOY - Generador endpoints ready for testing
