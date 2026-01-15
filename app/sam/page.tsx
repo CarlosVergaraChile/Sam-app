@@ -19,7 +19,7 @@ function escapeHtml(text: string): string {
 function SamPageContent() {
   const [isPro, setIsPro] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
-    const [pricing, setPricing] = useState<{activePrice: number, label: string, endsAt: string, isActive: boolean} | null>(null);
+    const [pricing, setPricing] = useState<{activePrice: string, label: string, endsAt: string, isActive: boolean} | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [responseText, setResponseText] = useState('');
   const [printMode, setPrintMode] = useState(false);
