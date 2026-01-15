@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -16,12 +16,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Obtener usuario actual
     const token = authHeader.slice(7);
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    supabase.auth.setSession({ access_token: token, refresh_token: '' });
-
-    // Obtener user actual
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+
     if (userError || !user) {
       return NextResponse.json(
         { error: 'Invalid token or user not found' },
@@ -30,7 +29,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar acceso al feature generador
-    const { data: features, error: featureError } = await supabase
+    const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
+    const { data: features, error: featureError } = await supabaseService
       .from('user_features')
       .select('enabled')
       .eq('user_id', user.id)
@@ -44,33 +44,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar créditos
-    const { data: credits, error: creditsError } = await supabase
+    // Verificar créditos disponibles
+    const { data: credits, error: creditsError } = await supabaseService
       .from('user_credits')
-      .select('balance')
+      .select('credits')
       .eq('user_id', user.id)
       .single();
 
-    if (creditsError || !credits || credits.balance < 1) {
+    if (creditsError || !credits || credits.credits < 1) {
       return NextResponse.json(
-        { error: 'Insufficient credits', balance: credits?.balance || 0 },
+        { error: 'Insufficient credits', balance: credits?.credits || 0 },
         { status: 402 }
       );
     }
 
     // Obtener parámetros del request
     const body = await request.json();
-    const { nivel = '', asignatura = '', tipo = '', caracteristicas = [] } = body;
+    const { nivel } = body;
 
     // Generar material (stub por ahora)
-    const material = `Material educativo generado\n\nNivel: ${nivel}\nAsignatura: ${asignatura}\nTipo: ${tipo}\nCaracterísticas: ${caracteristicas.join(', ') || 'ninguna'}\n\nContenido de ejemplo para ${asignatura} de ${nivel}.`;
+    const material = `Material educativo generado\n\nNivel: ${nivel || 'general'}\nUsuario: ${user.email}\nTipo: Contenido de apoyo`;
 
-    // Descontar 1 crédito (usar service role para update)
-    const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
+    // Descontar 1 crédito (usuario service role para update)
     const { error: updateError } = await supabaseService
       .from('user_credits')
       .update({
-        balance: credits.balance - 1,
+        credits: credits.credits - 1,
         used_this_month: (credits.used_this_month || 0) + 1
       })
       .eq('user_id', user.id);
@@ -78,7 +77,7 @@ export async function POST(request: NextRequest) {
     if (updateError) {
       console.error('Error updating credits:', updateError);
       return NextResponse.json(
-        { error: 'Failed to process credits' },
+        { error: 'Failed to process generation' },
         { status: 500 }
       );
     }
@@ -86,11 +85,10 @@ export async function POST(request: NextRequest) {
     // Respuesta exitosa
     return NextResponse.json(
       {
-        material,
-        creditosUsados: 1,
-        saldoRestante: credits.balance - 1,
-        tipo,
-        timestamp: new Date().toISOString()
+        ok: true,
+        message: 'Generated',
+        material: material,
+        creditsRemaining: credits.credits - 1
       },
       { status: 200 }
     );
@@ -101,11 +99,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  return NextResponse.json(
-    { ok: true, message: 'Generate API endpoint', method: 'POST' },
-    { status: 200 }
-  );
 }
