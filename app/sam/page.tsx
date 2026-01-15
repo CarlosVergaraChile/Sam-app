@@ -22,6 +22,7 @@ function SamPageContent() {
   const [errorMessage, setErrorMessage] = useState('');
   const [responseText, setResponseText] = useState('');
   const [printMode, setPrintMode] = useState(false);
+    const [generadorEnabled, setGeneradorEnabled] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -61,6 +62,25 @@ function SamPageContent() {
       router.replace('/sam');
     }
   }, [searchParams, router]);
+
+    // Efecto: Verificar si el usuario tiene acceso al Generador
+  useEffect(() => {
+    const checkGenerador = async () => {
+      try {
+        const response = await fetch('/api/features/generador');
+        if (response.ok) {
+          const data = await response.json();
+          setGeneradorEnabled(data.enabled || false);
+        } else {
+          setGeneradorEnabled(false);
+        }
+      } catch (error) {
+        console.error('Error checking generador feature:', error);
+        setGeneradorEnabled(false);
+      }
+    };
+    checkGenerador();
+  }, []);
 
   const handleEvaluate = () => {
     if (!responseText.trim()) {
@@ -267,7 +287,7 @@ function SamPageContent() {
           >
             {isPro ? 'Exportar' : 'Exportar (PRO)'}
           </button>
-          {isPro && (
+          85 (
             <button
               onClick={handlePrintPdf}
               className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
