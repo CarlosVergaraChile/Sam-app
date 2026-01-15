@@ -19,7 +19,6 @@ function escapeHtml(text: string): string {
 function SamPageContent() {
   const [isPro, setIsPro] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
-    const [pricing, setPricing] = useState<{activePrice: string, label: string, endsAt: string, isActive: boolean} | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [responseText, setResponseText] = useState('');
   const [printMode, setPrintMode] = useState(false);
@@ -47,14 +46,6 @@ function SamPageContent() {
     }
   }, [isPro]);
 
-    // Fetch pricing on mount
-  useEffect(() => {
-    fetch('/api/pricing')
-      .then(res => res.json())
-      .then(data => setPricing(data))
-      .catch(err => console.error('[SAM][pricing] error:', err));
-  }, []);
-
   // Manejo del retorno desde Stripe
   useEffect(() => {
     const success = searchParams.get('success');
@@ -69,14 +60,6 @@ function SamPageContent() {
       // No cambiar isPro, solo limpiar URL
       router.replace('/sam');
     }
-
-      // Fetch pricing info on mount
-  useEffect(() => {
-    fetch('/api/pricing')
-      .then(res => res.json())
-      .then(data => setPricing(data))
-      .catch(err => console.error('[SAM][pricing] Error:', err));
-  }, []);
   }, [searchParams, router]);
 
   const handleEvaluate = () => {
@@ -179,7 +162,7 @@ function SamPageContent() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: pricing?.activePrice || 'price_1SpIBTAaDeOcsC00GasIgBeN' }),
+        body: JSON.stringify({ priceId: 'price_1SpIBTAaDeOcsC00GasIgBeN' }),
       });
       const data = await res.json();
       if (data.url) {
@@ -323,3 +306,81 @@ function SamPageContent() {
             </div>
             <div className="text-2xl text-gray-600 mb-5">CLP/mes</div>
             
+            <div className="text-xl text-gray-500 line-through mb-6">
+              Precio regular desde marzo: $9.990/mes
+            </div>
+            
+            <div className="bg-amber-100 border-l-4 border-amber-600 p-4 mb-6 text-left">
+              <p className="text-sm font-bold text-amber-900">
+                ⏰ <strong>Clases inician 4 de marzo</strong> (7 semanas). Asegura tu precio fundadores hoy y consérvalo para siempre.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-left mb-6">
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Evaluaciones ilimitadas</span>
+              </div>
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Exportación TXT y DOC</span>
+              </div>
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Sin permanencia mínima</span>
+              </div>
+              <div className="flex items-start">
+                <span className="text-green-600 text-xl font-bold mr-2">✓</span>
+                <span className="text-gray-800">Cancela cuando quieras</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={handleSubscribe}
+              className="w-full bg-indigo-700 hover:bg-indigo-800 text-white text-2xl font-extrabold py-5 px-8 rounded-xl transition-all shadow-2xl mb-4 transform hover:scale-105"
+            >
+              Comenzar ahora por $7.990/mes →
+            </button>
+            
+            <p className="text-sm text-gray-700 mb-3 font-medium">
+              🔒 Pago seguro con Stripe • Código:{' '}
+              <code className="bg-gray-200 px-2 py-1 rounded font-mono font-bold">
+                FUNDADORES2026
+              </code>
+            </p>
+            
+            <p className="text-xs text-gray-600 italic leading-relaxed">
+              <strong>Garantía de precio:</strong> Si te suscribes a $7.990 hoy, mantienes ese precio indefinidamente. Nuevos usuarios desde 1 marzo pagan $9.900/mes o $99.000/año.
+            </p>
+          </div>
+        </div>
+      )}
+
+        {isPro && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-green-900 mb-2">
+              Plan PRO Activo
+            </h3>
+            <p className="text-green-700">
+              Tienes acceso completo a todas las funciones de SAM v6.
+            </p>
+            <button
+              onClick={() => setIsPro(false)}
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              Deshacer PRO (Test)
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function SamPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SamPageContent />
+    </Suspense>
+  );
+}
