@@ -179,7 +179,7 @@ function SamPageContent() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: pricing?.activePrice || 'price_1SpIBTAaDeOcsC00GasIgBe' }),
+        body: JSON.stringify({ priceId: pricing?.activePrice || 'price_1SpIBTAaDeOcsC00GasIgBeN' }),
       });
       const data = await res.json();
       if (data.url) {
@@ -323,6 +323,3 @@ function SamPageContent() {
             </div>
             <div className="text-2xl text-gray-600 mb-5">CLP/mes</div>
             
-            <div {pricing?.isActive
-              ? `$${pricing.activePrice.toLocaleString('es-CL')}`
-              : '$9.990'}
