@@ -8,7 +8,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 // Early Bird Pricing Configuration
 // Set to true to use Early Bird price ($7,990 CLP)
 // Set to false to revert to base price + coupon ($9,990 CLP)
-const USE_EARLY_BIRD_PRICE = true;
+const EARLY_BIRD_END = '2026-02-28T23:59:00Z'; // Hard stop for Early Bird pricing
+const USE_EARLY_BIRD_PRICE = new Date() < new Date(EARLY_BIRD_END); // Auto-switch based on date
 const EARLY_BIRD_PRICE_ID = 'price_1SphYfAaDeOcsC00sisonidT'; // $7,990 CLP monthly
 
 export async function POST(request: NextRequest) {
