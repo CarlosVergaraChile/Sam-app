@@ -7,7 +7,9 @@ export async function GET(
   { params }: { params: { feature: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+
     const {
       data: { session },
     } = await supabase.auth.getSession();
