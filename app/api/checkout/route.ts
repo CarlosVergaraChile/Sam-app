@@ -5,11 +5,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-02-24.acacia',
 });
 
+// Early Bird Pricing Configuration
+// Set to true to use Early Bird price ($7,990 CLP)
+// Set to false to revert to base price + coupon ($9,990 CLP)
+const USE_EARLY_BIRD_PRICE = true;
+const EARLY_BIRD_PRICE_ID = 'price_1SphYfAaDeOcsC00sisonidT'; // $7,990 CLP monthly
+
 export async function POST(request: NextRequest) {
   try {
-    const { priceId } = await request.json();
+const { priceId: requestPriceId } = await request.json();
+    
+    // Use Early Bird price if enabled, otherwise use price from request
+    // TODO: Remove Early Bird logic when reverting to base price + coupon FUNDADORES2026
+    const priceId = USE_EARLY_BIRD_PRICE ? EARLY_BIRD_PRICE_ID : requestPriceId;
 
-    const session = await stripe.checkout.sessions.create({
+      const session = await stripe.checkout.sessions.create({
       line_items: [
         {
           price: priceId,
@@ -23,10 +33,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (error: any) {
-    console.error('Error creating checkout session:', error);
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
