@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>SAM – Prueba rápida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --sam-blue: #007bff;
+      --sam-blue-dark: #0062cc;
+      --sam-bg: #f3f6ff;
+      --sam-text: #0f172a;
+      --sam-muted: #6b7280;
+      --sam-card: #ffffff;
+      --sam-border: #e5e7eb;
+      --sam-radius-lg: 18px;
+      --sam-radius-md: 12px;
+      --sam-radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #4f9cff 0, #0052cc 40%, #002b80 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--sam-text);
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1100px;
+      margin: 16px;
+      background: linear-gradient(135deg, #f9fbff 0, #eef3ff 40%, #ffffff 100%);
+      border-radius: 28px;
+      box-shadow:
+        0 24px 80px rgba(15, 23, 42, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.7);
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 920px) {
+      .shell {
+        grid-template-columns: 1fr;
+        padding: 20px 18px;
+        border-radius: 22px;
+      }
+    }
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      justify-content: space-between;
+    }
+
+    .right {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 22px;
+      padding: 18px 18px 16px;
+      border: 1px solid var(--sam-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-row img {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+    }
+
+    .logo-row span {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sam-muted);
+      font-weight: 600;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      color: #020617;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--sam-muted);
+      margin: 4px 0 0;
+    }
+
+    .primary-btn {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--sam-radius-pill);
+      border: none;
+      background: linear-gradient(135deg, var(--sam-blue) 0, var(--sam-blue-dark) 100%);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.55);
+    }
+
+    .primary-btn span {
+      font-size: 18px;
+    }
+      font-size: 18px;
+    }
+
+    .hero-inputs {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .select-group {
+      flex: 1 1 120px;
+      min-width: 120px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sam-muted);
+      margin-bottom: 3px;
+    }
+
+    select {
+      width: 100%;
+      border-radius: var(--sam-radius-pill);
+      border: 1px solid var(--sam-border);
+      padding: 6px 10px;
+      font-size: 13px;
+      background: #ffffff;
+    }
+
+    .actions-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .action-btn {
+      flex: 1 1 150px;
+      border-radius: var(--sam-radius-pill);
+      border: 1px solid rgba(15, 23, 42, 0.05);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 7px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+    .action-btn strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .action-btn span {
+      font-size: 11px;
+      color: var(--sam-muted);
+    }
+
+    .right-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .right-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #020617;
+    }
+
+    .pill-context {
+      font-size: 11px;
+      border-radius: var(--sam-radius-pill);
+      padding: 4px 8px;
+      background: #e0ecff;
+      color: #1d4ed8;
+    }
+      color: #1d4ed8;
+    }
+
+    .card-list {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card {
+      border-radius: var(--sam-radius-md);
+      border: 1px solid var(--sam-border);
+      background: var(--sam-card);
+      padding: 8px 10px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #0f172a;
+    }
+
+    .card-body {
+      font-size: 12px;
+      color: var(--sam-muted);
+      line-height: 1.4;
+    }
+
+    .right-footer {
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .right-footer-left {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .ghost-btn {
+      border-radius: var(--sam-radius-pill);
+      border: 1px dashed var(--sam-border);
+      padding: 4px 10px;
+      font-size: 11px;
+      background: #f9fafb;
+      cursor: pointer;
+      color: #4b5563;
+    }
+
+    .small-select {
+      border-radius: var(--sam-radius-pill);
+      border: 1px solid var(--sam-border);
+      padding: 3px 8px;
+      font-size: 11px;
+      background: #ffffff;
+    }
+
+    .feedback-row {
+      margin-top: 4px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .feedback-row span {
+      font-size: 11px;
+      color: var(--sam-muted);
+    }
+
+    .invite-block {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--sam-border);
+      display: grid;
+      grid-template-columns: 1.4fr 1.1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 920px) {
+      .invite-block {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .invite-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .field-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-row input {
+      width: 100%;
+      border-radius: var(--sam-radius-pill);
+      border: 1px solid var(--sam-border);
+      padding: 5px 10px;
+      font-size: 11px;
+    }
+
+    .mini-btn {
+      margin-top: 2px;
+      border-radius: var(--sam-radius-pill);
+      border: none;
+      padding: 4px 10px;
+      font-size: 11px;
+      background: var(--sam-blue);
+      color: #ffffff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="left">
+      <div>
+        <div class="logo-row">
+          <img src="logo_sam.jpg" alt="SAM logo">
+          <span>SAM · Educación básica</span>
+        </div>
+        <h1>Prueba SAM y dime qué le mejorarías.</h1>
+        <p class="subtitle">Sin registro. Sin cuenta. Sin compromiso. Juega y dime si esto sirve o no.</p>
+        <button class="primary-btn">
+          <span>👉</span> Probar ahora
+        </button>
+
+        <div class="hero-inputs">
+          <div class="select-group">
+            <label>Nivel</label>
+            <select>
+              <option>1° básico</option>
+              <option>2° básico</option>
+              <option>3° básico</option>
+              <option>4° básico</option>
+              <option>5° básico</option>
+              <option>6° básico</option>
+            </select>
+          </div>
+          <div class="select-group">
+            <label>Asignatura</label>
+            <select>
+              <option>Lenguaje</option>
+              <option>Matemática</option>
+              <option>Ciencias Naturales</option>
+              <option>Historia, Geografía y Cs. Sociales</option>
+              <option>Inglés (5°–6°)</option>
+              <option>Otra</option>
+            </select>
+          </div>
+          <div class="select-group">
+            <label>Momento del año</label>
+            <select>
+              <option>Inicio de año</option>
+              <option>Antes de vacaciones de invierno</option>
+              <option>Después de vacaciones de invierno</option>
+              <option>Cierre de año</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="action-btn">
+            <strong>Crear planificación de clase</strong>
+            <span>Ver una propuesta rápida</span>
+          </button>
+          <button class="action-btn">
+            <strong>Crear evaluación breve</strong>
+            <span>Ideas de preguntas y criterios</span>
+          </button>
+          <button class="action-btn">
+            <strong>Crear actividad</strong>
+            <span>Actividad central para la clase</span>
+          </button>
+          <button class="action-btn">
+            <strong>Crear informe para apoderados</strong>
+            <span>Frases listas para enviar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="right-header">
+        <div class="right-title">Borrador de trabajo para tu clase</div>
+        <div class="pill-context">Educación básica · demo</div>
+      </div>
+
+      <div class="card-list">
+        <div class="card">
+          <div class="card-title">Ficha 1 · Planificación de clase</div>
+          <div class="card-body">
+            Objetivo de aprendizaje sugerido para el nivel y asignatura seleccionados.<br>
+            Contenido central de la sesión y tiempo estimado.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Ficha 2 · Actividad principal</div>
+          <div class="card-body">
+            Actividad concreta para trabajar el contenido con el curso.<br>
+            Variante rápida para curso desmotivado o con bajo rendimiento.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Ficha 3 · Evaluación breve</div>
+          <div class="card-body">
+            Propuesta de evaluación corta y fácil de aplicar.<br>
+            Ajuste sugerido para estudiantes con NEE, TEA y TDAH.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Ficha 4 · Informe rápido para apoderados</div>
+          <div class="card-body">
+            Frases listas para comunicar qué se trabajó, con qué objetivo<br>
+            y cómo pueden apoyar desde la casa.
+          </div>
+        </div>
+      </div>
+
+      <div class="right-footer">
+        <div class="right-footer-left">
+          <button class="ghost-btn">Ver otra idea similar</button>
+          <button class="ghost-btn">Copiar contenido</button>
+          <button class="ghost-btn">Descargar en PDF simple</button>
+        </div>
+        <select class="small-select">
+          <option>¿Te hizo sentido?</option>
+          <option>Sí, esto me sirve</option>
+          <option>Me sirve, pero ajustaría cosas</option>
+          <option>No me sirve así</option>
+        </select>
+      </div>
+
+      <div class="feedback-row">
+        <span>¿Qué le mejorarías a esto?</span>
+      </div>
+
+      <div class="invite-block">
+        <div>
+          <div class="invite-title">Invita a un colega</div>
+          <div class="field-row">
+            <input type="text" placeholder="Nombre de colega" />
+            <input type="email" placeholder="Correo de colega" />
+            <button class="mini-btn">Enviar invitación</button>
+          </div>
+        </div>
+        <div>
+          <div class="invite-title">Tus datos de contacto</div>
+          <div class="field-row">
+            <input type="text" placeholder="Tu nombre" />
+            <input type="email" placeholder="Tu correo" />
+            <input type="text" placeholder="Tu establecimiento" />
+            <button class="mini-btn">Guardar mis datos</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
