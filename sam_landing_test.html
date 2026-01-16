@@ -460,6 +460,8 @@
 
       <div class="invite-block">
         <div>
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #020617;">¿A qué colega le serviría esto?</div>
+          <p style="font-size: 12px; color: #6b7280; margin-bottom: 10px;">Si conoces a una profe a la que esto le ahorraría tiempo, mándale el acceso.</p>
           <div class="invite-title">Invita a un colega</div>
           <div class="field-row">
             <input type="text" placeholder="Nombre de colega" />
@@ -467,17 +469,44 @@
             <button class="mini-btn">Enviar invitación</button>
           </div>
         </div>
-        <div>
-          <div class="invite-title">Tus datos de contacto</div>
-          <div class="field-row">
-            <input type="text" placeholder="Tu nombre" />
-            <input type="email" placeholder="Tu correo" />
-            <input type="text" placeholder="Tu establecimiento" />
-            <button class="mini-btn">Guardar mis datos</button>
-          </div>
         </div>
       </div>
     </div>
   </div>
 </body>
+
+<script>
+document.querySelectorAll('.mini-btn').forEach(btn => {
+  if (btn.textContent.includes('Enviar')) {
+    btn.addEventListener('click', function(e) {
+      const inputs = this.parentElement.querySelectorAll('input');
+      const nombre = inputs[0].value;
+      const correo = inputs[1].value;
+      
+      if (nombre && correo) {
+        const nuevoContacto = {
+          nombre: nombre,
+          email: correo,
+          origen: 'sam_landing_test',
+          referido_por: 'landing_anónima',
+          fecha: new Date().toISOString(),
+          estado: 'lead_nuevo'
+        };
+        
+        // Guardar en localStorage temporalmente
+        let contactos = JSON.parse(localStorage.getItem('sam_referrals') || '[]');
+        contactos.push(nuevoContacto);
+        localStorage.setItem('sam_referrals', JSON.stringify(contactos));
+        
+        // Mostrar mensaje
+        inputs[0].value = '';
+        inputs[1].value = '';
+        alert('✅ Listo. Le llegará el acceso para probar SAM.');
+      } else {
+        alert('Por favor completa nombre y correo del colega.');
+      }
+    });
+  }
+});
+</script>
 </html>
