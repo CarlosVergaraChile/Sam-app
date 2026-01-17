@@ -45,9 +45,10 @@ export default function LoginPage() {
 
         if (signUpError) throw signUpError;
         
-        setMessage('Check your email to confirm your account!');
+        setMessage('Account created! You can now login.');
         setEmail('');
         setPassword('');
+        setIsSignUp(false);
       } else {
         // Sign in
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
