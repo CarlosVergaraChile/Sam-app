@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-});
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) return null;
+  return new Stripe(key, { apiVersion: '2025-02-24.acacia' });
+}
 
 // Early Bird Pricing Configuration
 // Set to true to use Early Bird price ($7,990 CLP)
@@ -14,7 +16,11 @@ const EARLY_BIRD_PRICE_ID = 'price_1SphYfAaDeOcsC00sisonidT'; // $7,990 CLP mont
 
 export async function POST(request: NextRequest) {
   try {
-const { priceId: requestPriceId } = await request.json();
+    const stripe = getStripe();
+    if (!stripe) {
+      return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 });
+    }
+    const { priceId: requestPriceId } = await request.json();
     
     // Use Early Bird price if enabled, otherwise use price from request
     // TODO: Remove Early Bird logic when reverting to base price + coupon FUNDADORES2026
@@ -28,8 +34,8 @@ const { priceId: requestPriceId } = await request.json();
         },
       ],
       mode: 'subscription',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin}/cancel`,
     });
 
     return NextResponse.json({ url: session.url });

@@ -1,0 +1,21 @@
+# Node/Next.js
+node_modules/
+.next/
+.turbo/
+dist/
+coverage/
+
+# Env files
+.env.local
+.env*
+
+# Vercel
+.vercel/
+
+# OS / misc
+.DS_Store
+Thumbs.db
+*.log
+
+# VSCode
+.vscode/

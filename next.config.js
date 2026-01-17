@@ -8,11 +8,6 @@ const nextConfig = {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
   headers: async () => {
     return [
       {
