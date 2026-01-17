@@ -28,14 +28,13 @@ export default function GeneratorPage() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    // Check if user has a session in localStorage
-    const session = localStorage.getItem('sam_session');
-    if (!session) {
-      // No session, redirect to login
-      router.push('/login');
-    }
-  }, [router]);
+  // Temporarily disabled auth check for testing
+  // useEffect(() => {
+  //   const session = localStorage.getItem('sam_session');
+  //   if (!session) {
+  //     router.push('/login');
+  //   }
+  // }, [router]);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
