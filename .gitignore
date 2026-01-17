@@ -8,6 +8,7 @@ coverage/
 # Env files
 .env.local
 .env*
+!.env.local.example
 
 # Vercel
 .vercel/

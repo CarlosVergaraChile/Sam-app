@@ -4,6 +4,39 @@
 
 SAM v6 es una plataforma SaaS web para evaluación automática de respuestas manuscritas de estudiantes.
 
+## 📚 Documentación
+
+- [🚀 Despliegue en Vercel](./VERCEL_DEPLOY.md) - Guía completa de deployment
+- [🔗 Configuración Stripe Webhooks](./STRIPE_WEBHOOKS.md) - Setup de webhooks en producción
+- [⚙️ Variables de Entorno](./README.env.md) - Configuración de .env.local
+
+## 🏁 Quick Start Local
+
+### Requisitos
+- Node.js 18+ y npm
+- Cuentas en: Supabase, Stripe (opcional para testing)
+
+### Setup
+
+```bash
+# Clonar e instalar
+git clone https://github.com/CarlosVergaraChile/Sam-app.git
+cd Sam-app
+npm install
+
+# Configurar entorno
+cp .env.local.example .env.local
+# Edita .env.local con tus credenciales
+
+# Desarrollo
+npm run dev
+# Abre http://localhost:3000
+
+# Compilar
+npm run build
+npm run start
+```
+
 ### Características Principales
 - **OCR Manuscrito**: Reconocimiento óptico de caracteres para respuestas escritas a mano
 - **Feedback Curricular**: Evaluación basada en estándares curriculares chilenos (RAG)
