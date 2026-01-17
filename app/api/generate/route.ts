@@ -203,30 +203,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-    if (creditError || !creditResult || creditResult.length === 0) {
-      log(requestId, userId, 'Credit deduction failed', { creditError: creditError?.message });
-      return NextResponse.json(
-    return NextResponse.json(
-      {
-        material,
-        creditsRemaining: 100, // Demo credits
-        mode,
-        llmUsed,
-        latency_ms,
-      },
-      {
-        status: 200,
-        headers: { 'X-Request-ID': requestId },
-      }
-    );
-  } catch (err) {
-    log(requestId, userId, 'Unexpected error', {
-      error: err instanceof Error ? err.message : 'Unknown error',
-    });
-    return NextResponse.json(
-      { error: 'Internal server error', code: 'UNEXPECTED_ERROR' },
-      { status: 500, headers: { 'X-Request-ID': requestId } }
-    );
-  }
-}
