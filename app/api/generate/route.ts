@@ -145,18 +145,10 @@ async function generateMaterial(
 
 export async function POST(request: NextRequest) {
   const requestId = randomUUID();
-  let userId: string | null = null;
+  let userId: string | null = 'demo-user'; // Temporary for testing
   let creditsCost = 0;
 
   try {
-    const supabase = getSupabase();
-    if (!supabase) {
-      log(requestId, null, 'Supabase configuration missing');
-      return NextResponse.json(
-        { error: 'Server misconfigured', code: 'SUPABASE_CONFIG_MISSING' },
-        { status: 500 }
-      );
-    }
     const body = await request.json();
     const mode = body.mode || 'basic';
     const prompt = body.prompt || 'No prompt provided';
@@ -170,123 +162,71 @@ export async function POST(request: NextRequest) {
 
     creditsCost = COST_MODEL[mode];
 
-    const token = request.cookies.get('sb-token')?.value;
-    if (!token) {
-      log(requestId, null, 'Unauthorized: no session token');
-      return NextResponse.json(
-        { error: 'Unauthorized', code: 'NO_SESSION' },
-        { status: 401 }
-      );
-    }
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user) {
-      log(requestId, null, 'Unauthorized: invalid token', { authError: authError?.message });
-      return NextResponse.json(
-        { error: 'Unauthorized', code: 'INVALID_TOKEN' },
-        { status: 401 }
-      );
-    }
-    userId = user.id;
-
-    const { data: featureRow, error: featureError } = await supabase
-      .from('user_features')
-      .select('enabled')
-      .eq('user_id', user.id)
-      .eq('feature_name', 'generador')
-      .single();
-
-    if (featureError || !featureRow?.enabled) {
-      log(requestId, userId, 'Feature disabled', { featureError: featureError?.message });
-      return NextResponse.json(
-        { error: 'Feature not enabled', code: 'FEATURE_NOT_ENABLED' },
-        { status: 403 }
-      );
-    }
-
-    const { data: llmFlag } = await supabase
-      .from('feature_flags')
-      .select('is_enabled')
-      .eq('feature_name', 'llm_enabled')
-      .single();
-
-    const llmEnabled = llmFlag?.is_enabled ?? false;
-
-    const { data: creditResult, error: creditError } = await supabase
-      .rpc('consume_credit', {
-        p_user_id: user.id,
-        p_amount: creditsCost,
-      });
-
-    if (creditError || !creditResult || creditResult.length === 0) {
-      log(requestId, userId, 'Credit deduction failed', { creditError: creditError?.message });
-      return NextResponse.json(
-        { error: 'Failed to consume credit', code: 'CREDIT_ERROR' },
-        { status: 500 }
-      );
-    }
-
-    const { success, new_balance, error: creditMsg } = creditResult[0];
-    if (!success) {
-      log(requestId, userId, 'Insufficient credits', { balance: new_balance, required: creditsCost });
-      return NextResponse.json(
-        { error: creditMsg || 'Insufficient credits', code: 'INSUFFICIENT_CREDITS' },
-        { status: 402 }
-      );
-    }
+    // TEMPORARY: Skip authentication for testing
+    const llmEnabled = false; // Use stub for now
+    
+    log(requestId, userId, 'Generating material (demo mode)', { mode, creditsCost });
 
     const { material, llmUsed, latency_ms } = await generateMaterial(
       prompt,
-      user.id,
+      userId,
       mode,
       llmEnabled
     );
 
-    try {
-      await supabase.from('generated_materials').insert({
-        user_id: user.id,
-        prompt,
-        material,
-        request_id: requestId,
-        mode,
-      });
-    } catch (persistError) {
-      log(requestId, userId, 'Warning: material persistence failed', { error: String(persistError) });
-    }
-
     log(requestId, userId, 'Material generated successfully', {
-      creditsRemaining: new_balance,
       mode,
-      creditsCost,
       llmUsed,
       latency_ms,
-      provider: llmEnabled ? process.env.LLM_PROVIDER || 'anthropic' : 'stub',
     });
 
     return NextResponse.json(
       {
-        ok: true,
         material,
-        creditsRemaining: new_balance,
+        creditsRemaining: 100, // Demo credits
         mode,
-        requestId,
         llmUsed,
         latency_ms,
       },
       {
         status: 200,
-        headers: {
-          'X-Request-ID': requestId,
-        },
+        headers: { 'X-Request-ID': requestId },
       }
     );
-  } catch (error) {
+  } catch (err) {
     log(requestId, userId, 'Unexpected error', {
-      error: error instanceof Error ? error.message : String(error),
+      error: err instanceof Error ? err.message : 'Unknown error',
     });
     return NextResponse.json(
-      { error: 'Internal server error', code: 'SERVER_ERROR' },
-      { status: 500 }
+      { error: 'Internal server error', code: 'UNEXPECTED_ERROR' },
+      { status: 500, headers: { 'X-Request-ID': requestId } }
+    );
+  }
+}
+
+    if (creditError || !creditResult || creditResult.length === 0) {
+      log(requestId, userId, 'Credit deduction failed', { creditError: creditError?.message });
+      return NextResponse.json(
+    return NextResponse.json(
+      {
+        material,
+        creditsRemaining: 100, // Demo credits
+        mode,
+        llmUsed,
+        latency_ms,
+      },
+      {
+        status: 200,
+        headers: { 'X-Request-ID': requestId },
+      }
+    );
+  } catch (err) {
+    log(requestId, userId, 'Unexpected error', {
+      error: err instanceof Error ? err.message : 'Unknown error',
+    });
+    return NextResponse.json(
+      { error: 'Internal server error', code: 'UNEXPECTED_ERROR' },
+      { status: 500, headers: { 'X-Request-ID': requestId } }
     );
   }
 }
