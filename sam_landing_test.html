@@ -126,8 +126,6 @@
     .primary-btn span {
       font-size: 18px;
     }
-      font-size: 18px;
-    }
 
     .hero-inputs {
       margin-top: 10px;
@@ -207,8 +205,6 @@
       border-radius: var(--sam-radius-pill);
       padding: 4px 8px;
       background: #e0ecff;
-      color: #1d4ed8;
-    }
       color: #1d4ed8;
     }
 
@@ -345,10 +341,10 @@
           <span>👉</span> Probar ahora
         </button>
 
-        <div class="hero-inputs">
+        <div class="hero-inputs" id="sam-selectores">
           <div class="select-group">
             <label>Nivel</label>
-            <select>
+            <select id="nivel">
               <option>1° básico</option>
               <option>2° básico</option>
               <option>3° básico</option>
@@ -359,7 +355,7 @@
           </div>
           <div class="select-group">
             <label>Asignatura</label>
-            <select>
+            <select id="asignatura">
               <option>Lenguaje</option>
               <option>Matemática</option>
               <option>Ciencias Naturales</option>
@@ -370,7 +366,7 @@
           </div>
           <div class="select-group">
             <label>Momento del año</label>
-            <select>
+            <select id="momento">
               <option>Inicio de año</option>
               <option>Antes de vacaciones de invierno</option>
               <option>Después de vacaciones de invierno</option>
@@ -392,15 +388,25 @@
             <strong>Crear actividad</strong>
             <span>Actividad central para la clase</span>
           </button>
+          <button class="action-btn sam-action-btn">
+            <strong>Generar informe administrativo</strong>
+            <select style="margin-top:5px; width:100%;">
+              <option>Informe de cobertura curricular</option>
+              <option>Informe de resultados de aprendizaje</option>
+              <option>Informe para UTP</option>
+              <option>Informe para Dirección</option>
+            </select>
+          </button>
           <button class="action-btn">
-            <strong>Crear informe para apoderados</strong>
-            <span>Frases listas para enviar</span>
+            <strong>Corregir pruebas manuscritas</strong><br>
+            <span style="font-size:11px">Fotografía + anonimización</span>
           </button>
         </div>
       </div>
     </div>
 
-      <div id="sam-right-panel" class="right">      <div class="right-header">
+    <div id="sam-right-panel" class="right">
+      <div class="right-header">
         <div class="right-title">Borrador de trabajo para tu clase</div>
         <div class="pill-context">Educación básica · demo</div>
       </div>
@@ -459,7 +465,7 @@
 
       <div class="invite-block">
         <div>
-                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #020617;">¿A qué colega le serviría esto?</div>
+          <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #020617;">¿A qué colega le serviría esto?</div>
           <p style="font-size: 12px; color: #6b7280; margin-bottom: 10px;">Si conoces a una profe a la que esto le ahorraría tiempo, mándale el acceso.</p>
           <div class="invite-title">Invita a un colega</div>
           <div class="field-row">
@@ -468,44 +474,109 @@
             <button class="mini-btn">Enviar invitación</button>
           </div>
         </div>
-        </div>
       </div>
     </div>
   </div>
 </body>
 
 <script>
-document.querySelectorAll('.mini-btn').forEach(btn => {
-  if (btn.textContent.includes('Enviar')) {
-    btn.addEventListener('click', function(e) {
-      const inputs = this.parentElement.querySelectorAll('input');
-      const nombre = inputs[0].value;
-      const correo = inputs[1].value;
-      
-      if (nombre && correo) {
-        const nuevoContacto = {
-          nombre: nombre,
-          email: correo,
-          origen: 'sam_landing_test',
-          referido_por: 'landing_anónima',
-          fecha: new Date().toISOString(),
-          estado: 'lead_nuevo'
-        };
-        
-        // Guardar en localStorage temporalmente
-        let contactos = JSON.parse(localStorage.getItem('sam_referrals') || '[]');
-        contactos.push(nuevoContacto);
-        localStorage.setItem('sam_referrals', JSON.stringify(contactos));
-        
-        // Mostrar mensaje
-        inputs[0].value = '';
-        inputs[1].value = '';
-        alert('✅ Listo. Le llegará el acceso para probar SAM.');
-      } else {
-        alert('Por favor completa nombre y correo del colega.');
-      }
+document.addEventListener('DOMContentLoaded', function () {
+  var probarBtn = Array.from(document.querySelectorAll('button, a')).find(function (el) {
+    return el.textContent.trim().toLowerCase().includes('probar ahora');
+  });
+  var selectoresBlock = document.getElementById('sam-selectores');
+  if (probarBtn && selectoresBlock) {
+    probarBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      selectoresBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
+
+  var nivelSelect = document.getElementById('nivel');
+  var asignaturaSelect = document.getElementById('asignatura');
+  var momentoSelect = document.getElementById('momento');
+  var rightPanel = document.querySelector('#sam-right-panel, .right-panel, .sam-right-panel');
+  
+  if (!rightPanel) {
+    console.error('SAM: No se encontró panel derecho');
+    return;
+  }
+
+  function getValor(select, fallback) {
+    if (select && select.value) return select.value;
+    return fallback;
+  }
+
+  function actualizarPanel(accionTexto) {
+    var nivel = getValor(nivelSelect, 'Nivel no seleccionado');
+    var asignatura = getValor(asignaturaSelect, 'Asignatura no seleccionada');
+    var momento = getValor(momentoSelect, 'Momento no seleccionado');
+
+    rightPanel.innerHTML = '<h2>Borrador actualizado — ' + nivel + ' / ' + asignatura + '</h2><p>Acción: ' + accionTexto + '. Nivel: ' + nivel + '. Asignatura: ' + asignatura + '. Momento del año: ' + momento + '.</p>';
+    
+    var fichasContainer = document.createElement('div');
+    var textosFichas = [
+      'Idea rápida de clase para ' + nivel + ' en ' + asignatura + ' según ' + momento + '.',
+      'Sugerencia de actividad para ' + asignatura + ' en ' + nivel + ', adaptada a ' + momento + '.',
+      'Pauta simple para organizar la planificación de ' + asignatura + ' en ' + nivel + ' considerando ' + momento + '.',
+      'Borrador de informe sobre el avance en ' + asignatura + ' en ' + nivel + ', acorde a ' + momento + '.'
+    ];
+
+    textosFichas.forEach(function (texto) {
+      var card = document.createElement('div');
+      card.innerHTML = '<p>' + texto + '</p><button>Ver otra idea</button><button>Copiar</button>';
+      fichasContainer.appendChild(card);
+    });
+
+    rightPanel.appendChild(fichasContainer);
+  }
+
+  var botonesAccion = Array.from(document.querySelectorAll('button')).filter(function (el) {
+    var t = el.textContent.toLowerCase();
+    return t.includes('crear planificación') || t.includes('crear evaluación') || t.includes('crear actividad') || t.includes('crear informe') || t.includes('corregir pruebas');
+  });
+
+  botonesAccion.forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      actualizarPanel(btn.textContent.trim());
+      rightPanel.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  actualizarPanel('Vista inicial');
+  
+  // Script de invitación
+  document.querySelectorAll('.mini-btn').forEach(function(btn) {
+    if (btn.textContent.includes('Enviar')) {
+      btn.addEventListener('click', function(e) {
+        var inputs = this.parentElement.querySelectorAll('input');
+        var nombre = inputs[0].value;
+        var correo = inputs[1].value;
+        
+        if (nombre && correo) {
+          var nuevoContacto = {
+            nombre: nombre,
+            email: correo,
+            origen: 'sam_landing_test',
+            referido_por: 'landing_anónima',
+            fecha: new Date().toISOString(),
+            estado: 'lead_nuevo'
+          };
+          
+          var contactos = JSON.parse(localStorage.getItem('sam_referrals') || '[]');
+          contactos.push(nuevoContacto);
+          localStorage.setItem('sam_referrals', JSON.stringify(contactos));
+          
+          inputs[0].value = '';
+          inputs[1].value = '';
+          alert('✅ Listo. Le llegará el acceso para probar SAM.');
+        } else {
+          alert('Por favor completa nombre y correo del colega.');
+        }
+      });
+    }
+  });
 });
 </script>
 </html>
