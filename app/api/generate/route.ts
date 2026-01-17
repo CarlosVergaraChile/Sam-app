@@ -19,15 +19,30 @@ const COST_MODEL: Record<string, number> = {
 };
 
 const LLM_PROVIDERS = {
-  anthropic: {
-    url: 'https://api.anthropic.com/v1/messages',
-    header: 'x-api-key',
-    model: 'claude-3-sonnet-20240229',
+  gemini: {
+    url: 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent',
+    header: 'x-goog-api-key',
+    model: 'gemini-pro',
   },
   openai: {
     url: 'https://api.openai.com/v1/chat/completions',
     header: 'authorization',
-    model: 'gpt-4-turbo',
+    model: 'gpt-4o-mini',
+  },
+  anthropic: {
+    url: 'https://api.anthropic.com/v1/messages',
+    header: 'x-api-key',
+    model: 'claude-3-5-sonnet-20241022',
+  },
+  deepseek: {
+    url: 'https://api.deepseek.com/v1/chat/completions',
+    header: 'authorization',
+    model: 'deepseek-chat',
+  },
+  perplexity: {
+    url: 'https://api.perplexity.ai/chat/completions',
+    header: 'authorization',
+    model: 'llama-3.1-sonar-small-128k-online',
   },
 };
 
@@ -40,10 +55,10 @@ async function generateMaterialWithLLM(
   prompt: string,
   mode: string,
   apiKey: string,
-  provider: string = 'anthropic'
+  provider: string = 'gemini'
 ): Promise<{ material: string; latency_ms: number; success: boolean }> {
   const startTime = Date.now();
-  const timeout = mode === 'basic' ? 5000 : mode === 'advanced' ? 10000 : 15000;
+  const timeout = mode === 'basic' ? 10000 : mode === 'advanced' ? 20000 : 30000;
 
   try {
     const config = LLM_PROVIDERS[provider as keyof typeof LLM_PROVIDERS];
@@ -52,39 +67,74 @@ async function generateMaterialWithLLM(
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-    const response = await fetch(config.url, {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // Set auth header based on provider
+    if (provider === 'gemini') {
+      // Gemini uses query parameter for API key, not header in generateContent
+    } else if (provider === 'openai' || provider === 'deepseek' || provider === 'perplexity') {
+      headers['authorization'] = `Bearer ${apiKey}`;
+    } else if (provider === 'anthropic') {
+      headers['x-api-key'] = apiKey;
+      headers['anthropic-version'] = '2023-06-01';
+    }
+
+    const maxTokens = mode === 'basic' ? 1000 : mode === 'advanced' ? 2000 : 3000;
+
+    let requestBody: any;
+    let requestUrl = config.url;
+
+    if (provider === 'gemini') {
+      requestUrl = `${config.url}?key=${apiKey}`;
+      requestBody = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          maxOutputTokens: maxTokens,
+          temperature: 0.7,
+        },
+      };
+    } else if (provider === 'anthropic') {
+      requestBody = {
+        model: config.model,
+        max_tokens: maxTokens,
+        messages: [{ role: 'user', content: prompt }],
+      };
+    } else {
+      // OpenAI, DeepSeek, Perplexity (OpenAI-compatible)
+      requestBody = {
+        model: config.model,
+        max_tokens: maxTokens,
+        messages: [{ role: 'user', content: prompt }],
+      };
+    }
+
+    const response = await fetch(requestUrl, {
       method: 'POST',
-      headers: {
-        [config.header]: apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(
-        provider === 'anthropic'
-          ? {
-              model: config.model,
-              max_tokens: mode === 'basic' ? 500 : mode === 'advanced' ? 1500 : 2500,
-              messages: [{ role: 'user', content: prompt }],
-            }
-          : {
-              model: config.model,
-              max_tokens: mode === 'basic' ? 500 : mode === 'advanced' ? 1500 : 2500,
-              messages: [{ role: 'user', content: prompt }],
-            }
-      ),
+      headers,
+      body: JSON.stringify(requestBody),
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      throw new Error(`LLM API error: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`LLM API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    const material =
-      provider === 'anthropic'
-        ? data.content?.[0]?.text || ''
-        : data.choices?.[0]?.message?.content || '';
+    let material = '';
+
+    if (provider === 'gemini') {
+      material = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    } else if (provider === 'anthropic') {
+      material = data.content?.[0]?.text || '';
+    } else {
+      // OpenAI, DeepSeek, Perplexity
+      material = data.choices?.[0]?.message?.content || '';
+    }
 
     if (!material) throw new Error('Empty response from LLM');
 
@@ -92,6 +142,7 @@ async function generateMaterialWithLLM(
     return { material, latency_ms, success: true };
   } catch (error) {
     const latency_ms = Date.now() - startTime;
+    console.error(`LLM generation failed for ${provider}:`, error);
     return {
       material: '',
       latency_ms,
@@ -105,7 +156,7 @@ async function generateMaterial(
   userId: string,
   mode: string,
   llmEnabled: boolean
-): Promise<{ material: string; llmUsed: boolean; latency_ms: number }> {
+): Promise<{ material: string; llmUsed: boolean; latency_ms: number; provider?: string }> {
   if (!llmEnabled) {
     const latency_ms = Math.random() * 100 + 50;
     return {
@@ -115,31 +166,31 @@ async function generateMaterial(
     };
   }
 
-  const apiKey = process.env.LLM_API_KEY;
-  const provider = process.env.LLM_PROVIDER || 'anthropic';
+  // Try providers in order of preference
+  const providerPriority = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
+  
+  for (const provider of providerPriority) {
+    const apiKey = process.env[`LLM_API_KEY_${provider.toUpperCase()}`];
+    if (!apiKey) continue; // Skip if no API key for this provider
 
-  if (!apiKey) {
-    return {
-      material: `[FALLBACK] LLM API key not configured. Using stub.\n\nTimestamp: ${new Date().toISOString()}`,
-      llmUsed: false,
-      latency_ms: 0,
-    };
+    console.log(`Trying provider: ${provider}`);
+    const result = await generateMaterialWithLLM(prompt, mode, apiKey, provider);
+
+    if (result.success) {
+      return {
+        material: result.material,
+        llmUsed: true,
+        latency_ms: result.latency_ms,
+        provider,
+      };
+    }
   }
 
-  const result = await generateMaterialWithLLM(prompt, mode, apiKey, provider);
-
-  if (!result.success) {
-    return {
-      material: `[FALLBACK] LLM generation failed (timeout or error). Using stub.\n\nOriginal prompt: ${prompt}\nTimestamp: ${new Date().toISOString()}`,
-      llmUsed: false,
-      latency_ms: result.latency_ms,
-    };
-  }
-
+  // Fallback if all providers failed
   return {
-    material: result.material,
-    llmUsed: true,
-    latency_ms: result.latency_ms,
+    material: `[FALLBACK] All LLM providers failed or no API keys configured.\n\nPlease configure at least one API key in environment variables:\n- LLM_API_KEY_GEMINI\n- LLM_API_KEY_OPENAI\n- LLM_API_KEY_DEEPSEEK\n- LLM_API_KEY_ANTHROPIC\n- LLM_API_KEY_PERPLEXITY\n\nTimestamp: ${new Date().toISOString()}`,
+    llmUsed: false,
+    latency_ms: 0,
   };
 }
 
@@ -162,22 +213,29 @@ export async function POST(request: NextRequest) {
 
     creditsCost = COST_MODEL[mode];
 
-    // Check if LLM is available
-    const llmEnabled = !!process.env.LLM_API_KEY;
+    // Check if any LLM is available
+    const hasAnyKey = !!(
+      process.env.LLM_API_KEY_GEMINI ||
+      process.env.LLM_API_KEY_OPENAI ||
+      process.env.LLM_API_KEY_DEEPSEEK ||
+      process.env.LLM_API_KEY_ANTHROPIC ||
+      process.env.LLM_API_KEY_PERPLEXITY
+    );
     
-    log(requestId, userId, 'Generating material', { mode, creditsCost, llmEnabled });
+    log(requestId, userId, 'Generating material', { mode, creditsCost, llmEnabled: hasAnyKey });
 
-    const { material, llmUsed, latency_ms } = await generateMaterial(
+    const { material, llmUsed, latency_ms, provider } = await generateMaterial(
       prompt,
       userId,
       mode,
-      llmEnabled
+      hasAnyKey
     );
 
     log(requestId, userId, 'Material generated successfully', {
       mode,
       llmUsed,
       latency_ms,
+      provider,
     });
 
     return NextResponse.json(
@@ -187,6 +245,7 @@ export async function POST(request: NextRequest) {
         mode,
         llmUsed,
         latency_ms,
+        provider,
       },
       {
         status: 200,
