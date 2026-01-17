@@ -14,18 +14,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="min-h-screen flex flex-col">
-          <nav className="bg-blue-600 text-white p-4">
-            <div className="max-w-7xl mx-auto flex justify-between items-center">
-              <h1 className="text-2xl font-bold">SAM v6</h1>
-              <div className="space-x-4">
-                <a href="/" className="hover:bg-blue-700 px-3 py-2 rounded">Home</a>
-                <a href="/login" className="hover:bg-blue-700 px-3 py-2 rounded">Login</a>
-                <a href="/dashboard" className="hover:bg-blue-700 px-3 py-2 rounded">Dashboard</a>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <nav style={{ backgroundColor: '#2563eb', color: 'white', padding: '1rem' }}>
+            <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold' }}>SAM v6</h1>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <a href="/" style={{ padding: '0.5rem 0.75rem', borderRadius: '0.375rem', cursor: 'pointer', textDecoration: 'none', color: 'white' }}>Home</a>
+                <a href="/login" style={{ padding: '0.5rem 0.75rem', borderRadius: '0.375rem', cursor: 'pointer', textDecoration: 'none', color: 'white' }}>Login</a>
+                <a href="/dashboard" style={{ padding: '0.5rem 0.75rem', borderRadius: '0.375rem', cursor: 'pointer', textDecoration: 'none', color: 'white' }}>Dashboard</a>
               </div>
             </div>
           </nav>
-          <main className="flex-1">
+          <main style={{ flex: 1 }}>
             {children}
           </main>
           <footer className="bg-gray-200 p-4 text-center text-gray-600">
