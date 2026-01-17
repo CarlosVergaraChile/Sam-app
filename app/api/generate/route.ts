@@ -162,10 +162,10 @@ export async function POST(request: NextRequest) {
 
     creditsCost = COST_MODEL[mode];
 
-    // TEMPORARY: Skip authentication for testing
-    const llmEnabled = false; // Use stub for now
+    // Check if LLM is available
+    const llmEnabled = !!process.env.LLM_API_KEY;
     
-    log(requestId, userId, 'Generating material (demo mode)', { mode, creditsCost });
+    log(requestId, userId, 'Generating material', { mode, creditsCost, llmEnabled });
 
     const { material, llmUsed, latency_ms } = await generateMaterial(
       prompt,
