@@ -58,8 +58,16 @@ export default function LoginPage() {
 
         if (signInError) throw signInError;
         
+        // Store session info in localStorage for quick access
+        if (data.session) {
+          localStorage.setItem('sam_session', JSON.stringify({
+            user: data.user,
+            token: data.session.access_token,
+          }));
+        }
+        
         setMessage('Login successful! Redirecting...');
-        setTimeout(() => router.push('/dashboard'), 1500);
+        window.location.href = '/dashboard';
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

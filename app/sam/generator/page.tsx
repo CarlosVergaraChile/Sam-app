@@ -29,23 +29,12 @@ export default function GeneratorPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is authenticated
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/features/generador');
-        if (res.status === 401) {
-          router.push('/login');
-        } else if (res.ok) {
-          const data = await res.json();
-          if (!data.isEnabled) {
-            setState(prev => ({ ...prev, error: 'Generador feature is not enabled for your account' }));
-          }
-        }
-      } catch (err) {
-        console.error('Auth check failed:', err);
-      }
-    };
-    checkAuth();
+    // Check if user has a session in localStorage
+    const session = localStorage.getItem('sam_session');
+    if (!session) {
+      // No session, redirect to login
+      router.push('/login');
+    }
   }, [router]);
 
   const handleGenerate = async (e: React.FormEvent) => {
