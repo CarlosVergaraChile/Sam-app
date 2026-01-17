@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 function getSupabaseClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -13,8 +16,7 @@ function getSupabaseClient() {
 
 export default function AuthCallback() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
+  
   useEffect(() => {
     const handleCallback = async () => {
       try {
@@ -28,7 +30,8 @@ export default function AuthCallback() {
         
         if (!hash) {
           // Try to get code from query params (standard OAuth flow)
-          const code = searchParams.get('code');
+          const params = new URLSearchParams(window.location.search);
+          const code = params.get('code');
           if (code) {
             const { data, error } = await supabase.auth.exchangeCodeForSession(code);
             if (error) throw error;
@@ -45,7 +48,7 @@ export default function AuthCallback() {
     };
 
     handleCallback();
-  }, [router, searchParams]);
+  }, [router]);
 
   return (
     <div style={{
