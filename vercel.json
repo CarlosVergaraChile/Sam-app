@@ -3,15 +3,6 @@
   "outputDirectory": ".next",
   "framework": "nextjs",
   "regions": ["sfo1"],
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
-    "STRIPE_SECRET_KEY": "@stripe-secret-key",
-    "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret",
-    "NEXT_PUBLIC_BASE_URL": "@base-url",
-    "LLM_PROVIDER": "@llm-provider",
-    "LLM_API_KEY": "@llm-api-key"
-  },
   "headers": [
     {
       "source": "/api/(.*)",
