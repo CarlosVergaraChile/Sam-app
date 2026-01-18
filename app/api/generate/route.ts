@@ -20,10 +20,10 @@ const COST_MODEL: Record<string, number> = {
 
 const LLM_PROVIDERS = {
   gemini: {
-    // Gemini v1beta 404s if the model name is old (gemini-pro). Use latest flash model.
-    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
+    // Gemini v1beta - using gemini-1.5-flash which is stable and supported
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
     header: 'x-goog-api-key',
-    model: 'gemini-1.5-flash-latest',
+    model: 'gemini-1.5-flash',
   },
   openai: {
     url: 'https://api.openai.com/v1/chat/completions',

@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       }, { status: 500 });
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
     
     const response = await fetch(url, {
       method: 'POST',
