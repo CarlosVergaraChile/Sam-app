@@ -24,10 +24,17 @@ export default function GeneratorPage() {
   const router = useRouter();
 
   const allowedTypes = ['lesson-plan', 'assessment', 'activity', 'homework', 'report', 'custom'];
-  const initialType = (() => {
-    const type = searchParams.get('type');
-    return type && allowedTypes.includes(type) ? type : 'lesson-plan';
-  })();
+  const getTypeFromSearch = () => {
+    const fromHook = searchParams.get('type');
+    if (fromHook && allowedTypes.includes(fromHook)) return fromHook;
+    if (typeof window !== 'undefined') {
+      const fallback = new URLSearchParams(window.location.search).get('type');
+      if (fallback && allowedTypes.includes(fallback)) return fallback;
+    }
+    return 'lesson-plan';
+  };
+
+  const initialType = getTypeFromSearch();
 
   const [state, setState] = useState<GeneratorState>({
     prompt: '',
@@ -55,10 +62,8 @@ export default function GeneratorPage() {
 
   // Preseleccionar tipo según query (?type=assessment|activity|homework|report|lesson-plan|custom)
   useEffect(() => {
-    const type = searchParams.get('type');
-    if (type && allowedTypes.includes(type)) {
-      setState((prev) => ({ ...prev, contentType: type }));
-    }
+    const type = getTypeFromSearch();
+    setState((prev) => ({ ...prev, contentType: type }));
   }, [searchParams]);
 
   const handleGenerate = async (e: React.FormEvent) => {
@@ -85,7 +90,7 @@ Estructura solicitada:
 5) Adaptaciones / diferenciación
 6) Cierre y tarea (si aplica)
 Usa viñetas y subtítulos claros.
-Extensión: máximo 420 palabras, responde en un solo bloque, sin cortar el texto.
+Extensión: máximo 300 palabras, responde en un solo bloque, sin cortar el texto.
 No generes sitios web, HTML ni varias páginas; entrega solo texto del informe/plan solicitado.
 No agregues links ni navegación; mantén foco pedagógico y concreto.`;
 
