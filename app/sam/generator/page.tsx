@@ -20,9 +20,18 @@ interface GeneratorState {
 }
 
 export default function GeneratorPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const allowedTypes = ['lesson-plan', 'assessment', 'activity', 'homework', 'report', 'custom'];
+  const initialType = (() => {
+    const type = searchParams.get('type');
+    return type && allowedTypes.includes(type) ? type : 'lesson-plan';
+  })();
+
   const [state, setState] = useState<GeneratorState>({
     prompt: '',
-    contentType: 'lesson-plan',
+    contentType: initialType,
     subject: 'Matemática',
     gradeLevel: '4° Básico',
     objective: '',
@@ -36,9 +45,6 @@ export default function GeneratorPage() {
     creditsRemaining: null,
   });
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   // Temporarily disabled auth check for testing
   // useEffect(() => {
   //   const session = localStorage.getItem('sam_session');
@@ -47,11 +53,10 @@ export default function GeneratorPage() {
   //   }
   // }, [router]);
 
-  // Preseleccionar tipo según query (?type=assessment|activity|homework|report|lesson-plan)
+  // Preseleccionar tipo según query (?type=assessment|activity|homework|report|lesson-plan|custom)
   useEffect(() => {
     const type = searchParams.get('type');
-    const allowed = ['lesson-plan', 'assessment', 'activity', 'homework', 'report'];
-    if (type && allowed.includes(type)) {
+    if (type && allowedTypes.includes(type)) {
       setState((prev) => ({ ...prev, contentType: type }));
     }
   }, [searchParams]);
@@ -80,7 +85,9 @@ Estructura solicitada:
 5) Adaptaciones / diferenciación
 6) Cierre y tarea (si aplica)
 Usa viñetas y subtítulos claros.
-Extensión: máximo 450 palabras, responde en un solo bloque, sin cortar el texto.`;
+Extensión: máximo 420 palabras, responde en un solo bloque, sin cortar el texto.
+No generes sitios web, HTML ni varias páginas; entrega solo texto del informe/plan solicitado.
+No agregues links ni navegación; mantén foco pedagógico y concreto.`;
 
       const res = await fetch('/api/generate', {
         method: 'POST',
