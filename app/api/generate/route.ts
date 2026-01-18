@@ -127,7 +127,7 @@ async function generateMaterialWithLLM(
     } else if (provider === 'anthropic') {
       requestUrl = (config as any).url;
       requestBody = {
-        model: config.model,
+        model: (config as any).model,
         max_tokens: maxTokens,
         messages: [{ role: 'user', content: prompt }],
       };
@@ -135,7 +135,7 @@ async function generateMaterialWithLLM(
       // OpenAI, DeepSeek, Perplexity (OpenAI-compatible)
       requestUrl = (config as any).url;
       requestBody = {
-        model: config.model,
+        model: (config as any).model,
         max_tokens: maxTokens,
         messages: [{ role: 'user', content: prompt }],
       };
