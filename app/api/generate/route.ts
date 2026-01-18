@@ -97,7 +97,8 @@ async function generateMaterialWithLLM(
       const models = (config as any).models || [];
       let success = false;
       for (const model of models) {
-        requestUrl = `${config.url_template.replace('{model}', model)}?key=${apiKey}`;
+        const urlTemplate = (config as any).url_template as string;
+        requestUrl = `${urlTemplate.replace('{model}', model)}?key=${apiKey}`;
         requestBody = {
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
