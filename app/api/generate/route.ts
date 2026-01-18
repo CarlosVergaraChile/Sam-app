@@ -94,7 +94,7 @@ async function generateMaterialWithLLM(
     let requestUrl = '';
 
     if (provider === 'gemini') {
-      const models = config.models || [];
+      const models = (config as any).models || [];
       let success = false;
       for (const model of models) {
         requestUrl = `${config.url_template.replace('{model}', model)}?key=${apiKey}`;
