@@ -20,8 +20,8 @@ const COST_MODEL: Record<string, number> = {
 
 const LLM_PROVIDERS = {
   gemini: {
-    // Gemini v1beta - using gemini-1.5-flash which is stable and supported
-    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+    // Gemini v1 API - usar gemini-1.5-flash que está disponible en v1 (no en v1beta)
+    url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
     header: 'x-goog-api-key',
     model: 'gemini-1.5-flash',
   },
