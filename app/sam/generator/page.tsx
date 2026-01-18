@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface GeneratorState {
   prompt: string;
@@ -37,6 +37,7 @@ export default function GeneratorPage() {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Temporarily disabled auth check for testing
   // useEffect(() => {
@@ -45,6 +46,15 @@ export default function GeneratorPage() {
   //     router.push('/login');
   //   }
   // }, [router]);
+
+  // Preseleccionar tipo según query (?type=assessment|activity|homework|report|lesson-plan)
+  useEffect(() => {
+    const type = searchParams.get('type');
+    const allowed = ['lesson-plan', 'assessment', 'activity', 'homework', 'report'];
+    if (type && allowed.includes(type)) {
+      setState((prev) => ({ ...prev, contentType: type }));
+    }
+  }, [searchParams]);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +79,8 @@ Estructura solicitada:
 4) Materiales y recursos
 5) Adaptaciones / diferenciación
 6) Cierre y tarea (si aplica)
-Usa viñetas y subtítulos claros.`;
+Usa viñetas y subtítulos claros.
+Extensión: máximo 450 palabras, responde en un solo bloque, sin cortar el texto.`;
 
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -292,7 +303,6 @@ Usa viñetas y subtítulos claros.`;
             placeholder="Ej: Enfatiza ejemplos concretos, incluye trabajo colaborativo y una breve reflexión final."
             value={state.prompt}
             onChange={(e) => setState(prev => ({ ...prev, prompt: e.target.value }))}
-            required
             style={{
               width: '100%',
               minHeight: '150px',
