@@ -20,10 +20,9 @@ const COST_MODEL: Record<string, number> = {
 
 const LLM_PROVIDERS = {
   gemini: {
-    // Gemini v1 API - usar gemini-1.5-flash-001 (modelo actual en v1, no gemini-1.5-flash sin versión)
-    url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent',
-    header: 'x-goog-api-key',
-    model: 'gemini-1.5-flash-001',
+    // Intentar con modelos Gemini en orden de prioridad (algunos no están en v1 API)
+    models: ['gemini-pro', 'gemini-1.5-pro', 'gemini-1.5-pro-latest'],
+    url_template: 'https://generativelanguage.googleapis.com/v1/models/{model}:generateContent',
   },
   openai: {
     url: 'https://api.openai.com/v1/chat/completions',
