@@ -4,6 +4,8 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'SAM v6 - Handwritten Response Evaluation',
   description: 'Automatic evaluation of handwritten student responses with OCR and AI feedback',
+  themeColor: '#2563eb',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -13,6 +15,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/logo.svg" />
+        <meta name="theme-color" content="#2563eb" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="apple-touch-icon" href="/logo.svg" />
+      </head>
       <body>
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <nav style={{ backgroundColor: '#2563eb', color: 'white', padding: '1rem' }}>
@@ -32,6 +42,15 @@ export default function RootLayout({
             <p>&copy; 2026 SAM v6. All rights reserved.</p>
           </footer>
         </div>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+              });
+            }`,
+          }}
+        />
       </body>
     </html>
   );

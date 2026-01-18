@@ -1,0 +1,17 @@
+{
+  "name": "SAM v6",
+  "short_name": "SAM",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "description": "Evaluación asistida por IA para docentes - SAM v6",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ]
+}

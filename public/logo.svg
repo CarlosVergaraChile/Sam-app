@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SAM">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="64" fill="url(#g)"/>
+  <path d="M136 320c24 32 64 48 104 48 64 0 104-32 104-80 0-64-80-56-80-88 0-8 8-16 32-16 24 0 40 8 52 24l52-40c-24-32-60-52-104-52-64 0-100 36-100 76 0 60 80 56 80 88 0 12-12 20-36 20-28 0-52-12-68-32l-40 52z" fill="#e0f2fe"/>
+  <text x="50%" y="78%" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="88" fill="#e0f2fe" font-weight="700">SAM</text>
+</svg>
