@@ -125,7 +125,7 @@ async function generateMaterialWithLLM(
       }
       throw new Error('All Gemini models failed');
     } else if (provider === 'anthropic') {
-      requestUrl = config.url;
+      requestUrl = (config as any).url;
       requestBody = {
         model: config.model,
         max_tokens: maxTokens,
@@ -133,7 +133,7 @@ async function generateMaterialWithLLM(
       };
     } else {
       // OpenAI, DeepSeek, Perplexity (OpenAI-compatible)
-      requestUrl = config.url;
+      requestUrl = (config as any).url;
       requestBody = {
         model: config.model,
         max_tokens: maxTokens,
