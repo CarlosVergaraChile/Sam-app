@@ -169,8 +169,18 @@ async function generateMaterial(
   // Try providers in order of preference
   const providerPriority = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
   
+  console.log('DEBUG: Starting provider iteration...');
+  console.log('DEBUG: Environment variables check:', {
+    gemini: !!process.env.LLM_API_KEY_GEMINI,
+    openai: !!process.env.LLM_API_KEY_OPENAI,
+    deepseek: !!process.env.LLM_API_KEY_DEEPSEEK,
+    anthropic: !!process.env.LLM_API_KEY_ANTHROPIC,
+    perplexity: !!process.env.LLM_API_KEY_PERPLEXITY,
+  });
+  
   for (const provider of providerPriority) {
     const apiKey = process.env[`LLM_API_KEY_${provider.toUpperCase()}`];
+    console.log(`DEBUG: Checking ${provider}, has key: ${!!apiKey}`);
     if (!apiKey) continue; // Skip if no API key for this provider
 
     console.log(`Trying provider: ${provider}`);
@@ -214,15 +224,22 @@ export async function POST(request: NextRequest) {
     creditsCost = COST_MODEL[mode];
 
     // Check if any LLM is available
-    const hasAnyKey = !!(
-      process.env.LLM_API_KEY_GEMINI ||
-      process.env.LLM_API_KEY_OPENAI ||
-      process.env.LLM_API_KEY_DEEPSEEK ||
-      process.env.LLM_API_KEY_ANTHROPIC ||
-      process.env.LLM_API_KEY_PERPLEXITY
-    );
+    const availableKeys = {
+      gemini: !!process.env.LLM_API_KEY_GEMINI,
+      openai: !!process.env.LLM_API_KEY_OPENAI,
+      deepseek: !!process.env.LLM_API_KEY_DEEPSEEK,
+      anthropic: !!process.env.LLM_API_KEY_ANTHROPIC,
+      perplexity: !!process.env.LLM_API_KEY_PERPLEXITY,
+    };
     
-    log(requestId, userId, 'Generating material', { mode, creditsCost, llmEnabled: hasAnyKey });
+    const hasAnyKey = Object.values(availableKeys).some(v => v);
+    
+    log(requestId, userId, 'Generating material', { 
+      mode, 
+      creditsCost, 
+      llmEnabled: hasAnyKey,
+      availableKeys 
+    });
 
     const { material, llmUsed, latency_ms, provider } = await generateMaterial(
       prompt,
