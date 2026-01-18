@@ -169,18 +169,39 @@ async function generateMaterial(
 
   // Try providers in order of preference
   const providerPriority = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
+
+  const getApiKeyForProvider = (p: string): string | undefined => {
+    switch (p) {
+      case 'gemini':
+        return (
+          process.env.LLM_API_KEY_GEMINI ||
+          process.env.GOOGLE_API_KEY ||
+          process.env.GEMINI_API_KEY
+        );
+      case 'openai':
+        return process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY;
+      case 'deepseek':
+        return process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY;
+      case 'anthropic':
+        return process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY;
+      case 'perplexity':
+        return process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY;
+      default:
+        return undefined;
+    }
+  };
   
   console.log('DEBUG: Starting provider iteration...');
   console.log('DEBUG: Environment variables check:', {
-    gemini: !!process.env.LLM_API_KEY_GEMINI,
-    openai: !!process.env.LLM_API_KEY_OPENAI,
-    deepseek: !!process.env.LLM_API_KEY_DEEPSEEK,
-    anthropic: !!process.env.LLM_API_KEY_ANTHROPIC,
-    perplexity: !!process.env.LLM_API_KEY_PERPLEXITY,
+    gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY),
+    openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY),
+    deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY),
+    anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY),
+    perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY),
   });
   
   for (const provider of providerPriority) {
-    const apiKey = process.env[`LLM_API_KEY_${provider.toUpperCase()}`];
+    const apiKey = getApiKeyForProvider(provider);
     console.log(`DEBUG: Checking ${provider}, has key: ${!!apiKey}`);
     if (!apiKey) continue; // Skip if no API key for this provider
 
@@ -199,7 +220,7 @@ async function generateMaterial(
 
   // Fallback if all providers failed
   return {
-    material: `[FALLBACK] All LLM providers failed or no API keys configured.\n\nPlease configure at least one API key in environment variables:\n- LLM_API_KEY_GEMINI\n- LLM_API_KEY_OPENAI\n- LLM_API_KEY_DEEPSEEK\n- LLM_API_KEY_ANTHROPIC\n- LLM_API_KEY_PERPLEXITY\n\nTimestamp: ${new Date().toISOString()}`,
+    material: `[FALLBACK] Todos los proveedores fallaron o no hay API keys configuradas.\n\nConfigura al menos una API key en variables de entorno (cualquiera de estos nombres):\n- LLM_API_KEY_GEMINI / GOOGLE_API_KEY / GEMINI_API_KEY\n- LLM_API_KEY_OPENAI / OPENAI_API_KEY\n- LLM_API_KEY_DEEPSEEK / DEEPSEEK_API_KEY\n- LLM_API_KEY_ANTHROPIC / ANTHROPIC_API_KEY\n- LLM_API_KEY_PERPLEXITY / PERPLEXITY_API_KEY\n\nHora: ${new Date().toISOString()}`,
     llmUsed: false,
     latency_ms: 0,
   };
@@ -226,11 +247,11 @@ export async function POST(request: NextRequest) {
 
     // Check if any LLM is available
     const availableKeys = {
-      gemini: !!process.env.LLM_API_KEY_GEMINI,
-      openai: !!process.env.LLM_API_KEY_OPENAI,
-      deepseek: !!process.env.LLM_API_KEY_DEEPSEEK,
-      anthropic: !!process.env.LLM_API_KEY_ANTHROPIC,
-      perplexity: !!process.env.LLM_API_KEY_PERPLEXITY,
+      gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY),
+      openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY),
+      deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY),
+      anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY),
+      perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY),
     };
     
     const hasAnyKey = Object.values(availableKeys).some(v => v);
