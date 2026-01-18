@@ -44,7 +44,7 @@ export default function SamPage() {
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: 'Failed to check feature',
+          error: 'No se pudo verificar el generador',
         }));
       }
     };
@@ -77,7 +77,7 @@ export default function SamPage() {
         setState((prev) => ({
           ...prev,
           generating: false,
-          error: error.error || 'Generation failed',
+          error: error.error || 'Falló la generación',
         }));
         return;
       }
@@ -93,12 +93,12 @@ export default function SamPage() {
       setState((prev) => ({
         ...prev,
         generating: false,
-        error: 'Network error',
+        error: 'Error de red',
       }));
     }
   };
 
-  if (state.loading) return <div>Loading...</div>;
+  if (state.loading) return <div>Cargando...</div>;
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
@@ -109,7 +109,7 @@ export default function SamPage() {
       {state.isEnabled ? (
         <div>
           <div style={{ marginBottom: '15px' }}>
-            <label>Mode: </label>
+            <label>Modo: </label>
             <select
               value={state.mode}
               onChange={(e) =>
@@ -117,9 +117,9 @@ export default function SamPage() {
               }
               style={{ marginLeft: '10px', padding: '5px' }}
             >
-              <option value="basic">Basic (1 credit)</option>
-              <option value="advanced">Advanced (2 credits)</option>
-              <option value="premium">Premium (3 credits)</option>
+              <option value="basic">Básico (1 crédito)</option>
+              <option value="advanced">Avanzado (2 créditos)</option>
+              <option value="premium">Premium (3 créditos)</option>
             </select>
           </div>
           <div style={{ marginBottom: '10px' }}>
@@ -128,7 +128,7 @@ export default function SamPage() {
               onChange={(e) =>
                 setState((prev) => ({ ...prev, input: e.target.value }))
               }
-              placeholder="Enter your prompt..."
+              placeholder="Ingresa tu solicitud..."
               style={{
                 width: '100%',
                 height: '100px',
@@ -144,7 +144,7 @@ export default function SamPage() {
               cursor: state.generating ? 'not-allowed' : 'pointer',
             }}
           >
-            {state.generating ? 'Generating...' : 'Generate'}
+            {state.generating ? 'Generando...' : 'Generar'}
           </button>
           {state.material && (
             <div
@@ -154,10 +154,10 @@ export default function SamPage() {
                 border: '1px solid #ccc',
               }}
             >
-              <h3>Generated Material:</h3>
+              <h3>Contenido generado:</h3>
               <pre style={{ whiteSpace: 'pre-wrap' }}>{state.material}</pre>
               <p>
-                Credits remaining: <strong>{state.creditsRemaining}</strong>
+                Créditos restantes: <strong>{state.creditsRemaining}</strong>
               </p>
             </div>
           )}
@@ -169,7 +169,7 @@ export default function SamPage() {
                 border: '1px solid #ddd',
               }}
             >
-              <h3>History ({state.history.length})</h3>
+              <h3>Historial ({state.history.length})</h3>
               {state.history.map((item: any) => (
                 <div key={item.id} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
                   <small style={{ color: '#666' }}>
@@ -184,7 +184,7 @@ export default function SamPage() {
           )}
         </div>
       ) : (
-        <p>Generador feature is not enabled for your account.</p>
+        <p>El generador no está habilitado para tu cuenta.</p>
       )}
     </div>
   );

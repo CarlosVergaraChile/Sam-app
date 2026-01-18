@@ -13,7 +13,7 @@ export default function LessonPlansPage() {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <p>Loading Lesson Plan Generator...</p>
+      <p>Cargando generador de planificaciones...</p>
     </div>
   );
 }

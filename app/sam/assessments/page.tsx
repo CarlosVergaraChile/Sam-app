@@ -12,7 +12,7 @@ export default function AssessmentsPage() {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <p>Loading Assessment Generator...</p>
+      <p>Cargando generador de evaluaciones...</p>
     </div>
   );
 }

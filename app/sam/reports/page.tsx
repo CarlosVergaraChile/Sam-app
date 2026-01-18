@@ -12,7 +12,7 @@ export default function ReportsPage() {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <p>Loading Reports Generator...</p>
+      <p>Cargando generador de reportes...</p>
     </div>
   );
 }

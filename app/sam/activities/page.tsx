@@ -12,7 +12,7 @@ export default function ActivitiesPage() {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <p>Loading Activities Generator...</p>
+      <p>Cargando generador de actividades...</p>
     </div>
   );
 }

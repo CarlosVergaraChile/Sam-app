@@ -80,7 +80,7 @@ Usa viñetas y subtítulos claros.`;
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate content');
+        throw new Error(data.error || 'No se pudo generar el contenido');
       }
 
       setState(prev => ({
@@ -93,7 +93,7 @@ Usa viñetas y subtítulos claros.`;
     } catch (err) {
       setState(prev => ({
         ...prev,
-        error: err instanceof Error ? err.message : 'An error occurred',
+        error: err instanceof Error ? err.message : 'Ocurrió un error',
       }));
     } finally {
       setState(prev => ({ ...prev, loading: false }));
@@ -145,7 +145,7 @@ Usa viñetas y subtítulos claros.`;
 
       {state.creditsRemaining !== null && (
         <div style={{ backgroundColor: '#ecfdf5', color: '#065f46', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem' }}>
-          Credits remaining: <strong>{state.creditsRemaining}</strong>
+          Créditos restantes: <strong>{state.creditsRemaining}</strong>
         </div>
       )}
 
@@ -362,7 +362,7 @@ Usa viñetas y subtítulos claros.`;
                 cursor: 'pointer',
               }}
             >
-              📋 Copy
+              📋 Copiar
             </button>
           </div>
           <pre style={{

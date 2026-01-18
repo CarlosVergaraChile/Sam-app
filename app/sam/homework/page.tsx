@@ -12,7 +12,7 @@ export default function HomeworkPage() {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <p>Loading Homework Generator...</p>
+      <p>Cargando generador de tareas...</p>
     </div>
   );
 }

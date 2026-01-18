@@ -45,7 +45,7 @@ export default function LoginPage() {
 
         if (signUpError) throw signUpError;
         
-        setMessage('Account created! You can now login.');
+        setMessage('Cuenta creada. Ahora puedes iniciar sesión.');
         setEmail('');
         setPassword('');
         setIsSignUp(false);
@@ -66,11 +66,11 @@ export default function LoginPage() {
           }));
         }
         
-        setMessage('Login successful! Redirecting...');
+        setMessage('Inicio de sesión exitoso. Redirigiendo...');
         window.location.href = '/dashboard';
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Ocurrió un error');
     } finally {
       setLoading(false);
     }
@@ -94,7 +94,7 @@ export default function LoginPage() {
         maxWidth: '400px',
       }}>
         <h1 style={{ marginTop: 0, marginBottom: '20px', textAlign: 'center' }}>
-          {isSignUp ? 'Sign Up' : 'Login'}
+          {isSignUp ? 'Crear cuenta' : 'Ingresar'}
         </h1>
 
         {error && (
@@ -128,7 +128,7 @@ export default function LoginPage() {
               marginBottom: '8px',
               fontWeight: '500',
             }}>
-              Email
+              Correo electrónico
             </label>
             <input
               type="email"
@@ -144,7 +144,7 @@ export default function LoginPage() {
                 fontSize: '14px',
                 boxSizing: 'border-box',
               }}
-              placeholder="you@example.com"
+              placeholder="tu@correo.com"
             />
           </div>
 
@@ -154,7 +154,7 @@ export default function LoginPage() {
               marginBottom: '8px',
               fontWeight: '500',
             }}>
-              Password
+              Contraseña
             </label>
             <input
               type="password"
@@ -190,7 +190,7 @@ export default function LoginPage() {
               marginBottom: '16px',
             }}
           >
-            {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Login')}
+            {loading ? 'Procesando...' : (isSignUp ? 'Crear cuenta' : 'Ingresar')}
           </button>
         </form>
 
@@ -212,7 +212,7 @@ export default function LoginPage() {
             cursor: 'pointer',
           }}
         >
-          {isSignUp ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
+          {isSignUp ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Crea una'}
         </button>
       </div>
     </div>
