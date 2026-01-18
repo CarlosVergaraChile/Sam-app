@@ -46,9 +46,16 @@ export async function POST(request: NextRequest) {
                       process.env.GOOGLE_API_KEY || 
                       process.env.GEMINI_API_KEY;
 
-    // Try Gemini first with different model names
+    // Try Gemini first with available models (discovered via /api/test-models)
     if (geminiKey) {
-      const geminiModels = ['gemini-pro', 'gemini-1.5-pro', 'gemini-1.5-pro-latest'];
+      const geminiModels = [
+        'gemini-2.5-flash',
+        'gemini-2.5-pro',
+        'gemini-2.0-flash',
+        'gemini-2.0-flash-001',
+        'gemini-2.0-flash-lite-001',
+        'gemini-2.0-flash-lite',
+      ];
       
       for (const model of geminiModels) {
         try {

@@ -20,9 +20,16 @@ const COST_MODEL: Record<string, number> = {
 
 const LLM_PROVIDERS = {
   gemini: {
-    // Gemini - intentar primero con gemini-pro que es más estable
-    url: 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent',
-    model: 'gemini-pro',
+    // Usar la lista de modelos disponibles detectados (Gemini v1 stable)
+    models: [
+      'gemini-2.5-flash',
+      'gemini-2.5-pro',
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-001',
+      'gemini-2.0-flash-lite-001',
+      'gemini-2.0-flash-lite',
+    ],
+    url_template: 'https://generativelanguage.googleapis.com/v1/models/{model}:generateContent',
   },
   openai: {
     url: 'https://api.openai.com/v1/chat/completions',
@@ -84,18 +91,40 @@ async function generateMaterialWithLLM(
     const maxTokens = mode === 'basic' ? 1000 : mode === 'advanced' ? 2000 : 3000;
 
     let requestBody: any;
-    let requestUrl = config.url;
+    let requestUrl = '';
 
     if (provider === 'gemini') {
-      requestUrl = `${config.url}?key=${apiKey}`;
-      requestBody = {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          temperature: 0.7,
-        },
-      };
+      const models = config.models || [];
+      let success = false;
+      for (const model of models) {
+        requestUrl = `${config.url_template.replace('{model}', model)}?key=${apiKey}`;
+        requestBody = {
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            maxOutputTokens: maxTokens,
+            temperature: 0.7,
+          },
+        };
+
+        const response = await fetch(requestUrl, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const material = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          if (material) {
+            const latency_ms = Date.now() - startTime;
+            return { material, latency_ms, success: true };
+          }
+        }
+      }
+      throw new Error('All Gemini models failed');
     } else if (provider === 'anthropic') {
+      requestUrl = config.url;
       requestBody = {
         model: config.model,
         max_tokens: maxTokens,
@@ -103,6 +132,7 @@ async function generateMaterialWithLLM(
       };
     } else {
       // OpenAI, DeepSeek, Perplexity (OpenAI-compatible)
+      requestUrl = config.url;
       requestBody = {
         model: config.model,
         max_tokens: maxTokens,
@@ -127,9 +157,7 @@ async function generateMaterialWithLLM(
     const data = await response.json();
     let material = '';
 
-    if (provider === 'gemini') {
-      material = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    } else if (provider === 'anthropic') {
+    if (provider === 'anthropic') {
       material = data.content?.[0]?.text || '';
     } else {
       // OpenAI, DeepSeek, Perplexity
