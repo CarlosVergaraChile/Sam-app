@@ -90,9 +90,7 @@ Estructura solicitada:
 5) Adaptaciones / diferenciación
 6) Cierre y tarea (si aplica)
 Usa viñetas y subtítulos claros.
-Extensión: máximo 300 palabras, responde en un solo bloque, sin cortar el texto.
-No generes sitios web, HTML ni varias páginas; entrega solo texto del informe/plan solicitado.
-No agregues links ni navegación; mantén foco pedagógico y concreto.`;
+Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples páginas).`;
 
       const res = await fetch('/api/generate', {
         method: 'POST',
