@@ -200,8 +200,8 @@ async function generateMaterial(
   }
 
   // Try providers in order of preference
-  // Prioritize OpenAI first to test truncation issues seen with Gemini
-  const providerPriority = ['openai', 'gemini', 'deepseek', 'anthropic', 'perplexity'];
+  // Prioritize Gemini (has credits) over OpenAI (free trial exhausted)
+  const providerPriority = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
 
   const getApiKeyForProvider = (p: string): string | undefined => {
     switch (p) {
