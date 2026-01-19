@@ -1,4 +1,5 @@
 # SAM v6 - Sistema de Aprendizaje Manuscrito v6 
+<!-- Test commit for Vercel auto-deployment -->
 
 ## Descripción
 
