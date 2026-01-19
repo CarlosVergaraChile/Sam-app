@@ -65,7 +65,8 @@ async function generateMaterialWithLLM(
   provider: string = 'gemini'
 ): Promise<{ material: string; latency_ms: number; success: boolean }> {
   const startTime = Date.now();
-  const timeout = mode === 'basic' ? 10000 : mode === 'advanced' ? 20000 : 30000;
+  // Give more time on premium to avoid early aborts
+  const timeout = mode === 'basic' ? 10000 : mode === 'advanced' ? 20000 : 45000;
 
   try {
     const config = LLM_PROVIDERS[provider as keyof typeof LLM_PROVIDERS];
@@ -199,7 +200,8 @@ async function generateMaterial(
   }
 
   // Try providers in order of preference
-  const providerPriority = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
+  // Prioritize OpenAI first to test truncation issues seen with Gemini
+  const providerPriority = ['openai', 'gemini', 'deepseek', 'anthropic', 'perplexity'];
 
   const getApiKeyForProvider = (p: string): string | undefined => {
     switch (p) {
