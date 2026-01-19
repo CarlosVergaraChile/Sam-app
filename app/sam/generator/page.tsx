@@ -90,7 +90,7 @@ Objetivo/competencia a evaluar: ${state.objective || 'No indicado'}
 Duración estimada: ${state.duration || '45'} minutos
 Tipo de evaluación: Rúbrica analítica
 
-IMPORTANTE: Debes generar una RÚBRICA DE EVALUACIÓN con criterios claros y niveles de desempeño.
+IMPORTANTE: Debes generar una RÚBRICA DE EVALUACIÓN COMPLETA con criterios claros y niveles de desempeño.
 
 Contexto de aula (consideraciones): ${selectedTags}
 Indicaciones especiales del docente: ${otherNote}
@@ -111,7 +111,12 @@ Estructura obligatoria para la rúbrica:
 
 5. Ejemplos breves de indicadores observables en el aula
 
-Usa una tabla o formato muy claro, sin HTML. Entrega en un solo bloque.`;
+INSTRUCCIONES CRÍTICAS:
+- NO RESUMAS ni ABREVIES la respuesta
+- INCLUYE TODOS los criterios, TODOS los niveles y TODOS los descriptores
+- Si te quedas sin espacio, CONTINÚA igualmente con el contenido
+- Usa una tabla o formato muy claro, sin HTML
+- Entrega en un SOLO bloque completo sin truncar`;
       } else if (state.contentType === 'report') {
         // Para reports: mantener estructura existente
         fullPrompt = `Actúa como asistente administrativo para docentes de Chile y responde en español.
