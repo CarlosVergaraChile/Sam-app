@@ -1,4 +1,4 @@
-# SAM v6 - Sistema de Aprendizaje Manuscrito v6
+# SAM v6 - Sistema de Aprendizaje Manuscrito v6 
 
 ## Descripción
 
