@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+// Evita prerenderizar estáticamente, requerido por useSearchParams
+export const dynamic = 'force-dynamic';
+
 interface GeneratorState {
   prompt: string;
   contentType: string;
