@@ -308,7 +308,7 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Indicaciones del docente *</label>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Indicaciones del docente (opcional)</label>
           <textarea
             placeholder="Ej: Enfatiza ejemplos concretos, incluye trabajo colaborativo y una breve reflexión final."
             value={state.prompt}
@@ -323,6 +323,7 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
               fontFamily: 'inherit',
             }}
           />
+          <small style={{ color: '#666' }}>Si lo dejas vacío, usaré instrucciones genéricas.</small>
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
