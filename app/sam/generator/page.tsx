@@ -37,7 +37,7 @@ export default function GeneratorPage() {
   const initialType = getTypeFromSearch();
 
   const [state, setState] = useState<GeneratorState>({
-    prompt: '',
+    prompt: ' ',
     contentType: initialType,
     subject: 'Matemática',
     gradeLevel: '4° Básico',
@@ -308,7 +308,7 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Indicaciones del docente (opcional)</label>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Indicaciones del docente (opcional, puedes dejar vacío)</label>
           <textarea
             placeholder="Ej: Enfatiza ejemplos concretos, incluye trabajo colaborativo y una breve reflexión final."
             value={state.prompt}
