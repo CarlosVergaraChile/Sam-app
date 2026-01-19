@@ -82,17 +82,9 @@ function GeneratorContent() {
 
       if (state.contentType === 'assessment') {
         // Para assessments: generar rúbrica de evaluación
-        fullPrompt = `Crea una rúbrica de evaluación completa para ${state.subject} de ${state.gradeLevel}.
+        fullPrompt = `Genera rúbrica para ${state.subject} ${state.gradeLevel}. Objetivo: ${state.objective || 'evaluación general'}. Contexto: ${selectedTags}. ${otherNote || ''}
 
-Objetivo: ${state.objective || 'No indicado'}
-Contexto: ${selectedTags}
-${otherNote ? `Nota del docente: ${otherNote}` : ''}
-
-La rúbrica debe tener 4-5 criterios, y cada criterio debe tener 4 niveles de desempeño (Inicial, En desarrollo, Proficiente, Avanzado) con descripción detallada de qué observar en cada nivel.
-
-Incluye todo completo, con todos los criterios y niveles.
-
-IMPORTANTE: Al terminar TODA la rúbrica completa, escribe exactamente "--- FIN DE RÚBRICA ---"`;
+4-5 criterios, cada uno con 4 niveles (Inicial/Desarrollo/Proficiente/Avanzado) con descriptores. Al final escribe: --- FIN DE RÚBRICA ---`;
       } else if (state.contentType === 'report') {
         // Para reports
         fullPrompt = `Genera un informe administrativo/académico completo para ${state.subject} de ${state.gradeLevel}.

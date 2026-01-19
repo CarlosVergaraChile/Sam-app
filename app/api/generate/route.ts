@@ -89,7 +89,7 @@ async function generateMaterialWithLLM(
       headers['anthropic-version'] = '2023-06-01';
     }
 
-    const maxTokens = mode === 'basic' ? 3000 : mode === 'advanced' ? 8000 : 16000;
+    const maxTokens = mode === 'basic' ? 4000 : mode === 'advanced' ? 16000 : 32000;
 
     let requestBody: any;
     let requestUrl = '';
