@@ -170,7 +170,7 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
         </div>
       )}
 
-      <form onSubmit={handleGenerate} style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+      <form onSubmit={handleGenerate} noValidate style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
         <div style={{ marginBottom: '1.5rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Tipo de contenido *</label>
           <select
@@ -313,6 +313,7 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
             placeholder="Ej: Enfatiza ejemplos concretos, incluye trabajo colaborativo y una breve reflexión final."
             value={state.prompt}
             onChange={(e) => setState(prev => ({ ...prev, prompt: e.target.value }))}
+            required={false}
             style={{
               width: '100%',
               minHeight: '150px',
