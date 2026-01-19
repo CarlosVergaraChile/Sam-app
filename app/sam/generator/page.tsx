@@ -90,7 +90,9 @@ ${otherNote ? `Nota del docente: ${otherNote}` : ''}
 
 La rúbrica debe tener 4-5 criterios, y cada criterio debe tener 4 niveles de desempeño (Inicial, En desarrollo, Proficiente, Avanzado) con descripción detallada de qué observar en cada nivel.
 
-Incluye todo completo, con todos los criterios y niveles.`;
+Incluye todo completo, con todos los criterios y niveles.
+
+IMPORTANTE: Al terminar TODA la rúbrica completa, escribe exactamente "--- FIN DE RÚBRICA ---"`;
       } else if (state.contentType === 'report') {
         // Para reports
         fullPrompt = `Genera un informe administrativo/académico completo para ${state.subject} de ${state.gradeLevel}.
@@ -99,7 +101,9 @@ Tema del reporte: ${state.objective || 'No indicado'}
 Contexto: ${selectedTags}
 ${otherNote ? `Indicaciones: ${otherNote}` : ''}
 
-Incluye: resumen ejecutivo, análisis detallado, hallazgos, recomendaciones y conclusiones.`;
+Incluye: resumen ejecutivo, análisis detallado, hallazgos, recomendaciones y conclusiones.
+
+IMPORTANTE: Al terminar TODO el informe completo, escribe exactamente "--- FIN DE INFORME ---"`;
       } else {
         // Para otros tipos (lesson-plan, activity, homework, custom)
         const tipoES = state.contentType === 'lesson-plan' ? 'una planificación de clase' :
@@ -114,7 +118,9 @@ Nº de actividades: ${state.activitiesCount || '3'}
 Contexto: ${selectedTags}
 ${otherNote ? `Indicaciones: ${otherNote}` : ''}
 
-Incluye: objetivos, actividades paso a paso, evaluación, materiales, adaptaciones y cierre.`;
+Incluye: objetivos, actividades paso a paso, evaluación, materiales, adaptaciones y cierre.
+
+IMPORTANTE: Al terminar TODO el contenido completo, escribe exactamente "--- FIN ---"`;
       }
 
       const res = await fetch('/api/generate', {
