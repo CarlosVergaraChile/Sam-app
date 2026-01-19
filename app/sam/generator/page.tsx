@@ -17,6 +17,8 @@ interface GeneratorState {
   generated: string | null;
   error: string | null;
   creditsRemaining: number | null;
+  specialTags: string[];
+  specialOther: string;
 }
 
 export default function GeneratorPage() {
@@ -37,7 +39,7 @@ export default function GeneratorPage() {
   const initialType = getTypeFromSearch();
 
   const [state, setState] = useState<GeneratorState>({
-    prompt: ' ',
+    prompt: '',
     contentType: initialType,
     subject: 'Matemática',
     gradeLevel: '4° Básico',
@@ -50,6 +52,8 @@ export default function GeneratorPage() {
     generated: null,
     error: null,
     creditsRemaining: null,
+    specialTags: [],
+    specialOther: '',
   });
 
   // Temporarily disabled auth check for testing
@@ -71,6 +75,9 @@ export default function GeneratorPage() {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
+      const selectedTags = state.specialTags.length > 0 ? state.specialTags.join(', ') : 'No indicó';
+      const otherNote = state.specialOther?.trim() ? state.specialOther.trim() : 'Sin indicaciones adicionales';
+
       const fullPrompt = `Actúa como asistente pedagógico para docentes de Chile y responde en español.
 Tipo de contenido: ${state.contentType}
 Asignatura: ${state.subject || 'General'}
@@ -80,7 +87,8 @@ Duración estimada: ${state.duration || '45'} minutos
 Nº de actividades: ${state.activitiesCount || '3'}
 Formato deseado: ${state.outputFormat}
 Nivel de detalle: ${state.detailLevel}
-Indicaciones del docente: ${state.prompt || 'No indicó detalles adicionales'}
+Contexto de aula (seleccionado): ${selectedTags}
+Otra indicación del docente: ${otherNote}
 
 Estructura solicitada:
 1) Objetivos de aprendizaje
@@ -151,6 +159,17 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
     { value: 'bullets', label: 'Viñetas' },
     { value: 'tabla', label: 'Tabla' },
     { value: 'pasos', label: 'Pasos numerados' },
+  ];
+
+  const specialOptions = [
+    'Estudiantes con TEA',
+    'Escuela rural',
+    'Curso multigrado',
+    'Alta vulnerabilidad socioeconómica',
+    'Alumnos con NEE (diversas)',
+    'Alto rezago lector/escritura',
+    'Alta matrícula (curso numeroso)',
+    'Bajo acceso a tecnología',
   ];
 
   return (
@@ -308,23 +327,43 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Indicaciones del docente (opcional, puedes dejar vacío)</label>
-          <textarea
-            placeholder="Ej: Enfatiza ejemplos concretos, incluye trabajo colaborativo y una breve reflexión final."
-            value={state.prompt}
-            onChange={(e) => setState(prev => ({ ...prev, prompt: e.target.value }))}
-            required={false}
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Características especiales (marca las que apliquen)</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.5rem 1rem', marginBottom: '0.75rem' }}>
+            {specialOptions.map((opt) => {
+              const checked = state.specialTags.includes(opt);
+              return (
+                <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      setState(prev => {
+                        const exists = prev.specialTags.includes(opt);
+                        const nextTags = exists ? prev.specialTags.filter(t => t !== opt) : [...prev.specialTags, opt];
+                        return { ...prev, specialTags: nextTags };
+                      });
+                    }}
+                  />
+                  {opt}
+                </label>
+              );
+            })}
+          </div>
+          <label style={{ display: 'block', marginBottom: '0.35rem', fontWeight: '500' }}>Otra indicación (opcional)</label>
+          <input
+            type="text"
+            placeholder="Ej: Prefiere ejemplos con contexto local"
+            value={state.specialOther}
+            onChange={(e) => setState(prev => ({ ...prev, specialOther: e.target.value }))}
             style={{
               width: '100%',
-              minHeight: '150px',
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '0.375rem',
               fontSize: '1rem',
-              fontFamily: 'inherit',
             }}
           />
-          <small style={{ color: '#666' }}>Si lo dejas vacío, usaré instrucciones genéricas.</small>
+          <small style={{ color: '#666' }}>Si no marcas nada, usaré un contexto genérico.</small>
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
