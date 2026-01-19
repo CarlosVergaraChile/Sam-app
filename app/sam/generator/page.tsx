@@ -78,7 +78,62 @@ function GeneratorContent() {
       const selectedTags = state.specialTags.length > 0 ? state.specialTags.join(', ') : 'No indicó';
       const otherNote = state.specialOther?.trim() ? state.specialOther.trim() : 'Sin indicaciones adicionales';
 
-      const fullPrompt = `Actúa como asistente pedagógico para docentes de Chile y responde en español.
+      let fullPrompt = '';
+
+      if (state.contentType === 'assessment') {
+        // Para assessments: generar rúbrica de evaluación
+        fullPrompt = `Actúa como especialista en evaluación educativa para docentes de Chile y responde en español.
+
+Asignatura: ${state.subject || 'General'}
+Nivel/Grado: ${state.gradeLevel || 'No especificado'}
+Objetivo/competencia a evaluar: ${state.objective || 'No indicado'}
+Duración estimada: ${state.duration || '45'} minutos
+Tipo de evaluación: Rúbrica analítica
+
+IMPORTANTE: Debes generar una RÚBRICA DE EVALUACIÓN con criterios claros y niveles de desempeño.
+
+Contexto de aula (consideraciones): ${selectedTags}
+Indicaciones especiales del docente: ${otherNote}
+
+Estructura obligatoria para la rúbrica:
+
+1. **Criterios de Evaluación** (propón 4-5 criterios pertinentes al objetivo)
+
+2. Para cada criterio, define EXACTAMENTE 4 niveles de desempeño con descriptores:
+   - Inicial / No alcanzado (0-25%)
+   - En desarrollo / Básico (26-50%)
+   - Proficiente / Satisfactorio (51-75%)
+   - Avanzado / Sobresaliente (76-100%)
+
+3. Para cada nivel, proporciona una descripción clara de qué evidencia se busca
+
+4. Puntajes sugeridos por criterio
+
+5. Ejemplos breves de indicadores observables en el aula
+
+Usa una tabla o formato muy claro, sin HTML. Entrega en un solo bloque.`;
+      } else if (state.contentType === 'report') {
+        // Para reports: mantener estructura existente
+        fullPrompt = `Actúa como asistente administrativo para docentes de Chile y responde en español.
+Tipo de contenido: ${state.contentType}
+Asignatura: ${state.subject || 'General'}
+Nivel/Grado: ${state.gradeLevel || 'No especificado'}
+Objetivo/contenido del reporte: ${state.objective || 'No indicado'}
+Duración: ${state.duration || '45'} minutos
+Contexto: ${selectedTags}
+Notas: ${otherNote}
+
+Estructura solicitada:
+1) Resumen ejecutivo
+2) Análisis detallado
+3) Hallazgos principales
+4) Recomendaciones
+5) Conclusiones
+
+Usa viñetas y subtítulos claros. Entrega en un solo bloque de texto (sin HTML).`;
+      } else {
+        // Para otros tipos (lesson-plan, activity, homework, custom)
+        fullPrompt = `Actúa como asistente pedagógico para docentes de Chile y responde en español.
 Tipo de contenido: ${state.contentType}
 Asignatura: ${state.subject || 'General'}
 Nivel/Grado: ${state.gradeLevel || 'No especificado'}
@@ -99,6 +154,7 @@ Estructura solicitada:
 6) Cierre y tarea (si aplica)
 Usa viñetas y subtítulos claros.
 Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples páginas).`;
+      }
 
       const res = await fetch('/api/generate', {
         method: 'POST',
