@@ -80,4 +80,43 @@ Proxímamente: Scripts de inicialización automatizada
 
 ## Licencia
 
+## Configuración de LLM para Generación de Contenidos
+
+Sam-app utiliza un **router inteligente de proveedores LLM** que soporta múltiples APIs con fallback automático.
+
+### Paso 1: Agregar una API Key
+
+Edita tu archivo `.env.local` (local) o Vercel → Settings → Environment Variables (producción) y agrega **AL MENOS UNA** variable:
+
+```env
+# Opción recomendada (tier gratuito generoso)
+LLM_API_KEY_GEMINI=tu-api-key-aqui
+
+# O cualquiera de:
+LLM_API_KEY_OPENAI=tu-api-key-aqui
+LLM_API_KEY_DEEPSEEK=tu-api-key-aqui
+LLM_API_KEY_ANTHROPIC=tu-api-key-aqui
+LLM_API_KEY_PERPLEXITY=tu-api-key-aqui
+```
+
+### Paso 2: Reiniciar servidor
+
+```bash
+npm run dev
+```
+
+### Paso 3: Obtener API Keys
+
+- **Gemini** (RECOMENDADO): https://aistudio.google.com/app/apikey
+- **OpenAI**: https://platform.openai.com/api-keys
+- Otras opciones: Ver [docs/API_KEYS_SETUP.md](./docs/API_KEYS_SETUP.md)
+
+### Troubleshooting
+
+Si ves el error `[FALLBACK] Todos los proveedores fallaron`:
+1. Verifica que reiniciaste el servidor
+2. Verifica el nombre exacto de la variable (case-sensitive)
+3. Verifica que no haya espacios al inicio/final del valor
+4. Consulta [docs/API_KEYS_SETUP.md](./docs/API_KEYS_SETUP.md) para más ayuda
+
 Proprietario
