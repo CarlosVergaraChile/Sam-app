@@ -82,66 +82,39 @@ function GeneratorContent() {
 
       if (state.contentType === 'assessment') {
         // Para assessments: generar rúbrica de evaluación
-        fullPrompt = `ERES UN EXPERTO EN EVALUACIÓN EDUCATIVA CHILENA. Tu tarea es generar una RÚBRICA COMPLETA Y DETALLADA.
+        fullPrompt = `Crea una rúbrica de evaluación completa para ${state.subject} de ${state.gradeLevel}.
 
-ASIGNATURA: ${state.subject || 'General'}
-NIVEL: ${state.gradeLevel || 'No especificado'}
-OBJETIVO A EVALUAR: ${state.objective || 'No indicado'}
-CONTEXTO DE AULA: ${selectedTags}
-NOTAS DEL DOCENTE: ${otherNote}
-
-INSTRUCCIÓN CRÍTICA: Genera una rúbrica con MÍNIMO 4-5 criterios. Para CADA criterio, incluye EXACTAMENTE estos 4 niveles:
-
-NIVEL 1 (No alcanzado, 0-25%): [descripción detallada de qué observas]
-NIVEL 2 (En desarrollo, 26-50%): [descripción detallada de qué observas]
-NIVEL 3 (Proficiente, 51-75%): [descripción detallada de qué observas]
-NIVEL 4 (Avanzado, 76-100%): [descripción detallada de qué observas]
-
-FORMATO: Usa separadores claros (---, ===, etc) entre criterios. NO uses HTML.
-
-RESPONDE CON TODA LA INFORMACIÓN. NO RESUMAS, NO CORTES, CONTINÚA AUNQUE SIENTAS QUE ES MUCHO CONTENIDO. La calidad depende de que INCLUYAS TODO.`;
-      } else if (state.contentType === 'report') {
-        // Para reports: mantener estructura existente
-        fullPrompt = `Actúa como asistente administrativo para docentes de Chile y responde en español.
-Tipo de contenido: ${state.contentType}
-Asignatura: ${state.subject || 'General'}
-Nivel/Grado: ${state.gradeLevel || 'No especificado'}
-Objetivo/contenido del reporte: ${state.objective || 'No indicado'}
-Duración: ${state.duration || '45'} minutos
+Objetivo: ${state.objective || 'No indicado'}
 Contexto: ${selectedTags}
-Notas: ${otherNote}
+${otherNote ? `Nota del docente: ${otherNote}` : ''}
 
-Estructura solicitada:
-1) Resumen ejecutivo
-2) Análisis detallado
-3) Hallazgos principales
-4) Recomendaciones
-5) Conclusiones
+La rúbrica debe tener 4-5 criterios, y cada criterio debe tener 4 niveles de desempeño (Inicial, En desarrollo, Proficiente, Avanzado) con descripción detallada de qué observar en cada nivel.
 
-Usa viñetas y subtítulos claros. Entrega en un solo bloque de texto (sin HTML).`;
+Incluye todo completo, con todos los criterios y niveles.`;
+      } else if (state.contentType === 'report') {
+        // Para reports
+        fullPrompt = `Genera un informe administrativo/académico completo para ${state.subject} de ${state.gradeLevel}.
+
+Tema del reporte: ${state.objective || 'No indicado'}
+Contexto: ${selectedTags}
+${otherNote ? `Indicaciones: ${otherNote}` : ''}
+
+Incluye: resumen ejecutivo, análisis detallado, hallazgos, recomendaciones y conclusiones.`;
       } else {
         // Para otros tipos (lesson-plan, activity, homework, custom)
-        fullPrompt = `Actúa como asistente pedagógico para docentes de Chile y responde en español.
-Tipo de contenido: ${state.contentType}
-Asignatura: ${state.subject || 'General'}
-Nivel/Grado: ${state.gradeLevel || 'No especificado'}
-Objetivo/competencia: ${state.objective || 'No indicado'}
-Duración estimada: ${state.duration || '45'} minutos
-Nº de actividades: ${state.activitiesCount || '3'}
-Formato deseado: ${state.outputFormat}
-Nivel de detalle: ${state.detailLevel}
-Contexto de aula (seleccionado): ${selectedTags}
-Otra indicación del docente: ${otherNote}
+        const tipoES = state.contentType === 'lesson-plan' ? 'una planificación de clase' :
+                       state.contentType === 'activity' ? 'una actividad' :
+                       state.contentType === 'homework' ? 'una tarea' : 'contenido educativo';
+        
+        fullPrompt = `Crea ${tipoES} completa para ${state.subject} de ${state.gradeLevel}.
 
-Estructura solicitada:
-1) Objetivos de aprendizaje
-2) Actividades paso a paso (claras y accionables)
-3) Evaluación y retroalimentación
-4) Materiales y recursos
-5) Adaptaciones / diferenciación
-6) Cierre y tarea (si aplica)
-Usa viñetas y subtítulos claros.
-Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples páginas).`;
+Objetivo: ${state.objective || 'No indicado'}
+Duración: ${state.duration || '45'} minutos
+Nº de actividades: ${state.activitiesCount || '3'}
+Contexto: ${selectedTags}
+${otherNote ? `Indicaciones: ${otherNote}` : ''}
+
+Incluye: objetivos, actividades paso a paso, evaluación, materiales, adaptaciones y cierre.`;
       }
 
       const res = await fetch('/api/generate', {
