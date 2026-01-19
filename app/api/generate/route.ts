@@ -93,6 +93,9 @@ async function generateMaterialWithLLM(
     let requestBody: any;
     let requestUrl = '';
 
+    // Aumentar límites para Gemini que soporta más tokens
+    const geminiMaxTokens = mode === 'basic' ? 4000 : mode === 'advanced' ? 12000 : 24000;
+
     if (provider === 'gemini') {
       const models = (config as any).models || [];
       let success = false;
@@ -102,7 +105,7 @@ async function generateMaterialWithLLM(
         requestBody = {
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            maxOutputTokens: maxTokens,
+            maxOutputTokens: geminiMaxTokens,
             temperature: 0.7,
           },
         };

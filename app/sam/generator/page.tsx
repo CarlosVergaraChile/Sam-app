@@ -82,41 +82,24 @@ function GeneratorContent() {
 
       if (state.contentType === 'assessment') {
         // Para assessments: generar rúbrica de evaluación
-        fullPrompt = `Actúa como especialista en evaluación educativa para docentes de Chile y responde en español.
+        fullPrompt = `ERES UN EXPERTO EN EVALUACIÓN EDUCATIVA CHILENA. Tu tarea es generar una RÚBRICA COMPLETA Y DETALLADA.
 
-Asignatura: ${state.subject || 'General'}
-Nivel/Grado: ${state.gradeLevel || 'No especificado'}
-Objetivo/competencia a evaluar: ${state.objective || 'No indicado'}
-Duración estimada: ${state.duration || '45'} minutos
-Tipo de evaluación: Rúbrica analítica
+ASIGNATURA: ${state.subject || 'General'}
+NIVEL: ${state.gradeLevel || 'No especificado'}
+OBJETIVO A EVALUAR: ${state.objective || 'No indicado'}
+CONTEXTO DE AULA: ${selectedTags}
+NOTAS DEL DOCENTE: ${otherNote}
 
-IMPORTANTE: Debes generar una RÚBRICA DE EVALUACIÓN COMPLETA con criterios claros y niveles de desempeño.
+INSTRUCCIÓN CRÍTICA: Genera una rúbrica con MÍNIMO 4-5 criterios. Para CADA criterio, incluye EXACTAMENTE estos 4 niveles:
 
-Contexto de aula (consideraciones): ${selectedTags}
-Indicaciones especiales del docente: ${otherNote}
+NIVEL 1 (No alcanzado, 0-25%): [descripción detallada de qué observas]
+NIVEL 2 (En desarrollo, 26-50%): [descripción detallada de qué observas]
+NIVEL 3 (Proficiente, 51-75%): [descripción detallada de qué observas]
+NIVEL 4 (Avanzado, 76-100%): [descripción detallada de qué observas]
 
-Estructura obligatoria para la rúbrica:
+FORMATO: Usa separadores claros (---, ===, etc) entre criterios. NO uses HTML.
 
-1. **Criterios de Evaluación** (propón 4-5 criterios pertinentes al objetivo)
-
-2. Para cada criterio, define EXACTAMENTE 4 niveles de desempeño con descriptores:
-   - Inicial / No alcanzado (0-25%)
-   - En desarrollo / Básico (26-50%)
-   - Proficiente / Satisfactorio (51-75%)
-   - Avanzado / Sobresaliente (76-100%)
-
-3. Para cada nivel, proporciona una descripción clara de qué evidencia se busca
-
-4. Puntajes sugeridos por criterio
-
-5. Ejemplos breves de indicadores observables en el aula
-
-INSTRUCCIONES CRÍTICAS:
-- NO RESUMAS ni ABREVIES la respuesta
-- INCLUYE TODOS los criterios, TODOS los niveles y TODOS los descriptores
-- Si te quedas sin espacio, CONTINÚA igualmente con el contenido
-- Usa una tabla o formato muy claro, sin HTML
-- Entrega en un SOLO bloque completo sin truncar`;
+RESPONDE CON TODA LA INFORMACIÓN. NO RESUMAS, NO CORTES, CONTINÚA AUNQUE SIENTAS QUE ES MUCHO CONTENIDO. La calidad depende de que INCLUYAS TODO.`;
       } else if (state.contentType === 'report') {
         // Para reports: mantener estructura existente
         fullPrompt = `Actúa como asistente administrativo para docentes de Chile y responde en español.
