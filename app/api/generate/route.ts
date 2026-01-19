@@ -232,6 +232,7 @@ async function generateMaterial(
     anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY),
     perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY),
   });
+  console.log('DEBUG: Provider priority order:', providerPriority);
   
   for (const provider of providerPriority) {
     const apiKey = getApiKeyForProvider(provider);
