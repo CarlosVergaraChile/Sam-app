@@ -1,10 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-// Evita prerenderizar estáticamente, requerido por useSearchParams
-export const dynamic = 'force-dynamic';
 
 interface GeneratorState {
   prompt: string;
@@ -24,7 +21,7 @@ interface GeneratorState {
   specialOther: string;
 }
 
-export default function GeneratorPage() {
+function GeneratorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -442,5 +439,13 @@ Entrega en un solo bloque de texto (sin HTML, sin enlaces, sin múltiples págin
         </div>
       )}
     </div>
+  );
+}
+
+export default function GeneratorPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Cargando...</div>}>
+      <GeneratorContent />
+    </Suspense>
   );
 }
