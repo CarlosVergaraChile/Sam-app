@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
     creditsCost = COST_MODEL[mode];
 
     // Check if any LLM is available
-    const gemini: !!(process.env.LLM_API_KEY_GEMINI = {
+    const availableKeys = {
       gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.LLM_API_KEY),
       openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY || process.env.LLM_API_KEY),
       deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY || process.env.LLM_API_KEY),
