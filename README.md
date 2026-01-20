@@ -1,4 +1,4 @@
-# SAM v6 - Sistema de Aprendizaje Manuscrito v6 
+# SAM v6 - Sistema de Apoyo a Maestros v6 
 <!-- Test commit for Vercel auto-deployment -->
 <!-- Deployment fix: JSON syntax error in package.json resolved -->
 <!-- Force redeploy with correct LLM environment variables: LLM_API_KEY_GEMINI and LLM_API_KEY_OPENAI configured -->
