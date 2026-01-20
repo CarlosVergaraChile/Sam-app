@@ -195,8 +195,20 @@ async function generateMaterial(
 
   // Try providers in order of preference
   // Prioritize Gemini (has credits) over OpenAI (free trial exhausted)
-const providerPriority = ['gemini'];
-  const getApiKeyForProvider = (p: string): string | undefined => {
+// Build dynamic provider priority list based on available API keys
+ const PROVIDER_PRIORITY = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
+ const availableProviders: string[] = [];
+ 
+ for (const provider of PROVIDER_PRIORITY) {
+   const apiKey = getApiKeyForProvider(provider);
+   if (apiKey) {
+     availableProviders.push(provider);
+   }
+ }
+ 
+ const providerPriority = availableProviders.length > 0 ? availableProviders : ['gemini'];
+ console.log('DEBUG: Available providers:', availableProviders);
+ console.log('DEBUG: Final provider priority order:', providerPriority);  const getApiKeyForProvider = (p: string): string | undefined => {
     switch (p) {
       case 'gemini':
         return (
@@ -217,15 +229,6 @@ const providerPriority = ['gemini'];
     }
   };
   
-  console.log('DEBUG: Starting provider iteration...');
-  console.log('DEBUG: Environment variables check:', {
-    gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.LLM_API_KEY),
-    openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY || process.env.LLM_API_KEY),
-    deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY || process.env.LLM_API_KEY),
-    anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY || process.env.LLM_API_KEY),
-    perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY || process.env.LLM_API_KEY),
-  });
-  console.log('DEBUG: Provider priority order:', providerPriority);
   
   for (const provider of providerPriority) {
     const apiKey = getApiKeyForProvider(provider);
