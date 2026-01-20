@@ -1,5 +1,6 @@
 # SAM v6 - Sistema de Aprendizaje Manuscrito v6 
 <!-- Test commit for Vercel auto-deployment -->
+<!-- Deployment fix: JSON syntax error in package.json resolved -->
 
 ## Descripción
 
