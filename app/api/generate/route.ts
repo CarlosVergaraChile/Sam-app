@@ -21,7 +21,7 @@ const COST_MODEL: Record<string, number> = {
 const LLM_PROVIDERS = {
   gemini: {
     // Usar la lista de modelos disponibles detectados (Gemini v1 stable)
-    models: '['gemini-2.5-flash', 'gemini-2.0-flash']
+    models: '['gemini-2.5-flash', 'gemini-2.0-flash'],
 
     url_template: 'https://generativelanguage.googleapis.com/v1/models/{model}:generateContent',
   },
