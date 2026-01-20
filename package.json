@@ -19,8 +19,7 @@
     "@stripe/stripe-js": "^1.46.0",
     "stripe": "^17.5.0",
     "axios": "^1.6.0",
-    "zustand": "^4.4.0",
-        "groq-sdk": "^0.4.2"
+    "zustand": "^4.4.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
