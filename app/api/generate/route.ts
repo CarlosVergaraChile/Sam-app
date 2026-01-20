@@ -21,13 +21,7 @@ const COST_MODEL: Record<string, number> = {
 const LLM_PROVIDERS = {
   gemini: {
     // Usar la lista de modelos disponibles detectados (Gemini v1 stable)
-    models: [
-      'gemini-2.5-flash',
-      'gemini-2.5-pro',
-      'gemini-2.0-flash',
-      'gemini-2.0-flash-001',
-      'gemini-2.0-flash-lite-001',
-      'gemini-2.0-flash-lite',
+    models: 'gemini-2.5-flash', 'gemini-2.0-flash'
     ],
     url_template: 'https://generativelanguage.googleapis.com/v1/models/{model}:generateContent',
   },
@@ -201,8 +195,7 @@ async function generateMaterial(
 
   // Try providers in order of preference
   // Prioritize Gemini (has credits) over OpenAI (free trial exhausted)
-  const providerPriority = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
-
+const providerPriority = ['gemini'];
   const getApiKeyForProvider = (p: string): string | undefined => {
     switch (p) {
       case 'gemini':
