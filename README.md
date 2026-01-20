@@ -120,3 +120,5 @@ Si ves el error `[FALLBACK] Todos los proveedores fallaron`:
 4. Consulta [docs/API_KEYS_SETUP.md](./docs/API_KEYS_SETUP.md) para más ayuda
 
 Proprietario
+
+<!-- Deploy trigger for LLM_API_KEY fix -->
