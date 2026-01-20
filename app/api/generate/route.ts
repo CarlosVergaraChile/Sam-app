@@ -226,11 +226,11 @@ async function generateMaterial(
   
   console.log('DEBUG: Starting provider iteration...');
   console.log('DEBUG: Environment variables check:', {
-    gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY),
-    openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY),
-    deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY),
-    anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY),
-    perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY),
+    gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.LLM_API_KEY),
+    openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY || process.env.LLM_API_KEY),
+    deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY || process.env.LLM_API_KEY),
+    anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY || process.env.LLM_API_KEY),
+    perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY || process.env.LLM_API_KEY),
   });
   console.log('DEBUG: Provider priority order:', providerPriority);
   
@@ -280,12 +280,12 @@ export async function POST(request: NextRequest) {
     creditsCost = COST_MODEL[mode];
 
     // Check if any LLM is available
-    const availableKeys = {
-      gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY),
-      openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY),
-      deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY),
-      anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY),
-      perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY),
+    const gemini: !!(process.env.LLM_API_KEY_GEMINI = {
+      gemini: !!(process.env.LLM_API_KEY_GEMINI || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.LLM_API_KEY),
+      openai: !!(process.env.LLM_API_KEY_OPENAI || process.env.OPENAI_API_KEY || process.env.LLM_API_KEY),
+      deepseek: !!(process.env.LLM_API_KEY_DEEPSEEK || process.env.DEEPSEEK_API_KEY || process.env.LLM_API_KEY),
+      anthropic: !!(process.env.LLM_API_KEY_ANTHROPIC || process.env.ANTHROPIC_API_KEY || process.env.LLM_API_KEY),
+      perplexity: !!(process.env.LLM_API_KEY_PERPLEXITY || process.env.PERPLEXITY_API_KEY || process.env.LLM_API_KEY),
     };
     
     const hasAnyKey = Object.values(availableKeys).some(v => v);
