@@ -194,20 +194,9 @@ async function generateMaterial(
 
   // Try providers in order of preference
   // Prioritize Gemini (has credits) over OpenAI (free trial exhausted)
-// Build dynamic provider priority list based on available API keys
- const PROVIDER_PRIORITY = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
- const availableProviders: string[] = [];
- 
- for (const provider of PROVIDER_PRIORITY) {
-   const apiKey = getApiKeyForProvider(provider);
-   if (apiKey) {
-     availableProviders.push(provider);
-   }
- }
- 
- const providerPriority = availableProviders.length > 0 ? availableProviders : ['gemini'];
- console.log('DEBUG: Available providers:', availableProviders);
- console.log('DEBUG: Final provider priority order:', providerPriority);  const getApiKeyForProvider = (p: string): string | undefined => {
+  // Build dynamic provider priority list based on available API keys
+  
+  const getApiKeyForProvider = (p: string): string | undefined => {
     switch (p) {
       case 'gemini':
         return (
@@ -227,6 +216,20 @@ async function generateMaterial(
         return undefined;
     }
   };
+  
+  const PROVIDER_PRIORITY = ['gemini', 'openai', 'deepseek', 'anthropic', 'perplexity'];
+  const availableProviders: string[] = [];
+  
+  for (const provider of PROVIDER_PRIORITY) {
+    const apiKey = getApiKeyForProvider(provider);
+    if (apiKey) {
+      availableProviders.push(provider);
+    }
+  }
+  
+  const providerPriority = availableProviders.length > 0 ? availableProviders : ['gemini'];
+  console.log('DEBUG: Available providers:', availableProviders);
+  console.log('DEBUG: Final provider priority order:', providerPriority);
   
   
   for (const provider of providerPriority) {
