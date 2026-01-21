@@ -5,7 +5,7 @@
 **SAM v6** (Sistema de Apoyo a Maestros v6) is a Next.js 14 SaaS platform for AI-powered evaluation of handwritten student responses. The application integrates OCR, multiple LLM providers, payment processing (Stripe & Mercado Pago), and WhatsApp messaging for educational institutions in Latin America.
 
 - **Repository Size**: ~573MB (with node_modules), ~30MB (source only)
-- **Files**: 29 TypeScript/TSX files in `app/` directory
+- **Files**: 30 TypeScript/TSX files in `app/` directory
 - **Type**: Full-stack Next.js 14 application with API routes
 - **Primary Language**: TypeScript
 - **Target Runtime**: Node.js 20.x
@@ -64,7 +64,7 @@ npm run type-check
 npm run lint
 ```
 - Runs Next.js ESLint
-- **CURRENTLY FAILS** with 42 linting errors (existing issues)
+- **CURRENTLY FAILS** with 44 linting errors + 1 warning (existing issues)
 - Errors include: unused vars, any types, missing dependencies in useEffect
 - **IMPORTANT**: `next.config.js` has `ignoreDuringBuilds: true` - builds succeed despite lint errors
 - Do NOT fix unrelated linting errors unless they are in files you're modifying
@@ -274,7 +274,7 @@ Set in: Vercel Dashboard → Settings → Environment Variables
 
 ## Known Issues & Workarounds
 
-### Existing Linting Errors (42 total)
+### Existing Linting Errors (44 errors + 1 warning)
 - **Do NOT fix** unless modifying those files
 - Includes: unused vars, any types, missing useEffect deps
 - Build succeeds due to `ignoreDuringBuilds: true` in next.config.js
